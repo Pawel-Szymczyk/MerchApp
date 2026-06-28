@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "MerchApp (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "MerchApp (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
