@@ -1,4 +1,7 @@
-﻿using Microsoft.UI.Xaml;
+﻿using MerchApp.Services;
+using MerchApp.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -26,7 +29,10 @@ namespace MerchApp
     /// </summary>
     public partial class App : Application
     {
-        private Window? _window;
+        //private Window? _window;
+        public IServiceProvider Services { get; }
+
+        public static new App Current => (App)Application.Current;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -34,6 +40,7 @@ namespace MerchApp
         /// </summary>
         public App()
         {
+            Services = ConfigureServices();
             InitializeComponent();
         }
 
@@ -43,8 +50,37 @@ namespace MerchApp
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            _window = new MainWindow();
-            _window.Activate();
+            //_window = new MainWindow();
+            //_window.Activate();
+            var window = Services.GetRequiredService<MainWindow>();
+            window.Activate();
+        }
+
+        private static IServiceProvider ConfigureServices()
+        {
+            var services = new ServiceCollection();
+
+            // Services
+            services.AddSingleton<ISettingsService,  SettingsService>();
+            services.AddSingleton<IAuthService,  AuthService>();
+            services.AddSingleton<ISessionContext,  SessionContext>();
+            services.AddSingleton<ISharePointService, SharePointService>();
+            //services.AddSingleton<ICartService, CartService>();
+            services.AddSingleton<INotificationService, NotificationService>();
+
+            // ViewModels
+            services.AddTransient<LoginViewModel>();
+            services.AddTransient<ItemsViewModel>();
+            services.AddTransient<CartViewModel>();
+            services.AddTransient<MyRentalsViewModel>();
+            services.AddTransient<ManagerViewModel>();
+            //services.AddTransient<InventoryViewModel>();
+            //services.AddTransient<SettingsViewModel>();
+
+            // Windows
+            services.AddSingleton<MainWindow>();
+
+            return services.BuildServiceProvider();
         }
     }
 }
