@@ -1,0 +1,123 @@
+<Page
+    x:Class="MerchApp.Views.ShellPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <NavigationView
+        x:Name="NavView"
+        PaneDisplayMode="Left"
+        IsBackButtonVisible="Collapsed"
+        SelectionChanged="NavView_SelectionChanged">
+
+        <!-- Header — user info -->
+        <NavigationView.PaneHeader>
+            <StackPanel Spacing="4" Margin="16,16,16,8">
+                <!-- Avatar -->
+                <Border
+                    Width="36" Height="36"
+                    CornerRadius="18"
+                    Background="{ThemeResource AccentFillColorDefaultBrush}">
+                    <TextBlock
+                        x:Name="AvatarInitials"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="White"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"/>
+                </Border>
+
+                <TextBlock
+                    x:Name="UserNameText"
+                    Style="{StaticResource BodyStrongTextBlockStyle}"
+                    TextTrimming="CharacterEllipsis"/>
+
+                <TextBlock
+                    x:Name="UserRoleText"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+            </StackPanel>
+        </NavigationView.PaneHeader>
+
+        <!-- Navigation items -->
+        <NavigationView.MenuItems>
+
+            <!-- User items -->
+            <NavigationViewItem
+                x:Name="CatalogItem"
+                Content="Catalogue"
+                Tag="Catalogue">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE8A9;"/>
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+
+            <NavigationViewItem
+                x:Name="MyRentalsItem"
+                Content="My Rentals"
+                Tag="MyRentals">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE7BC;"/>
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+
+            <NavigationViewItem
+                x:Name="NotificationsItem"
+                Content="Notifications"
+                Tag="Notifications">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xEA8F;"/>
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+
+            <!-- Manager only items (hidden for users) -->
+            <NavigationViewItemSeparator x:Name="ManagerSeparator" Visibility="Collapsed"/>
+
+            <NavigationViewItem
+                x:Name="RequestsItem"
+                Content="Requests"
+                Tag="Requests"
+                Visibility="Collapsed">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE8A1;"/>
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+
+            <NavigationViewItem
+                x:Name="DashboardItem"
+                Content="Dashboard"
+                Tag="Dashboard"
+                Visibility="Collapsed">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE80F;"/>
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+
+            <NavigationViewItem
+                x:Name="InventoryItem"
+                Content="Inventory"
+                Tag="Inventory"
+                Visibility="Collapsed">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE179;"/>
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+
+        </NavigationView.MenuItems>
+
+        <!-- Footer -->
+        <NavigationView.FooterMenuItems>
+            <NavigationViewItem
+                Content="Settings"
+                Tag="Settings">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE713;"/>
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+        </NavigationView.FooterMenuItems>
+
+        <!-- Content frame -->
+        <Frame x:Name="ContentFrame"/>
+
+    </NavigationView>
+</Page>

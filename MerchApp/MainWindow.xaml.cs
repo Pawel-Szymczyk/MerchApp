@@ -1,3 +1,6 @@
+using MerchApp.Services;
+using MerchApp.Views;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -26,6 +29,30 @@ namespace MerchApp
         public MainWindow()
         {
             InitializeComponent();
+
+            var session = App.Current.Services.GetRequiredService<ISessionContext>();
+
+            // navigate to login or shell depending on session state
+            if(session.IsLoggedIn)
+            {
+                RootFrame.Navigate(typeof(ShellPage));
+            }
+            else
+            {
+                RootFrame.Navigate(typeof(LoginPage));
+            }
+
+            // react to login/logout
+            session.UserChanged += (_, _) =>
+            {
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    if (session.IsLoggedIn)
+                        RootFrame.Navigate(typeof(ShellPage));
+                    else
+                        RootFrame.Navigate(typeof(LoginPage));
+                });
+            };
         }
     }
 }

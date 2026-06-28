@@ -1,0 +1,157 @@
+<Page
+    x:Class="MerchApp.Views.ItemsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:MerchApp.Models"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid RowSpacing="16" Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Spacing="4">
+                <TextBlock
+                    Text="Catalogue"
+                    Style="{StaticResource TitleLargeTextBlockStyle}"/>
+                <TextBlock
+                    Text="Select items to add to your request"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+            </StackPanel>
+
+            <!-- Cart button with badge -->
+            <Button
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                Command="{x:Bind ViewModel.GoToCartCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon Glyph="&#xE7BF;" FontSize="16"/>
+                    <TextBlock Text="Cart"/>
+                    <InfoBadge
+                        Value="{x:Bind ViewModel.CartCount, Mode=OneWay}"
+                        Visibility="{x:Bind ViewModel.CartCount, Mode=OneWay, Converter={StaticResource IntToVisibilityConverter}}"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <!-- Search + filter -->
+        <Grid Grid.Row="1" ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <AutoSuggestBox
+                Grid.Column="0"
+                PlaceholderText="Search items..."
+                QueryIcon="Find"
+                Text="{x:Bind ViewModel.SearchQuery, Mode=TwoWay}"/>
+
+            <ToggleButton
+                Grid.Column="1"
+                Content="Available only"
+                IsChecked="{x:Bind ViewModel.ShowOnlyAvailable, Mode=TwoWay}"/>
+        </Grid>
+
+        <!-- Loading -->
+        <ProgressRing
+            Grid.Row="2"
+            IsActive="{x:Bind ViewModel.IsBusy, Mode=OneWay}"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"/>
+
+        <!-- Error state -->
+        <StackPanel
+            Grid.Row="2"
+            Spacing="16"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Visibility="{x:Bind ViewModel.HasError, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+            <FontIcon Glyph="&#xE783;" FontSize="48"
+                      Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
+            <TextBlock
+                Text="Could not connect to SharePoint"
+                Style="{StaticResource SubtitleTextBlockStyle}"
+                HorizontalAlignment="Center"/>
+            <TextBlock
+                Text="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}"
+                Style="{StaticResource CaptionTextBlockStyle}"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                HorizontalAlignment="Center"/>
+            <Button
+                Content="Try again"
+                HorizontalAlignment="Center"
+                Command="{x:Bind ViewModel.LoadItemsCommand}"/>
+        </StackPanel>
+
+        <!-- Items list -->
+        <ListView
+            Grid.Row="2"
+            ItemsSource="{x:Bind ViewModel.FilteredItems, Mode=OneWay}"
+            SelectionMode="None">
+
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="models:Item">
+                    <Grid Padding="0,8" ColumnSpacing="16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Item name + availability -->
+                        <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
+                            <TextBlock
+                                Text="{x:Bind Title}"
+                                Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                            <TextBlock
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                                <Run Text="Available: "/>
+                                <Run Text="{x:Bind AvailableCount}"/>
+                                <Run Text=" / "/>
+                                <Run Text="{x:Bind TotalCount}"/>
+                            </TextBlock>
+                        </StackPanel>
+
+                        <!-- Minus button -->
+                        <Button
+                            Grid.Column="1"
+                            Content="−"
+                            Width="32" Height="32"
+                            VerticalAlignment="Center"/>
+
+                        <!-- Quantity -->
+                        <TextBlock
+                            Grid.Column="2"
+                            Width="24"
+                            TextAlignment="Center"
+                            VerticalAlignment="Center"
+                            Style="{StaticResource BodyStrongTextBlockStyle}"/>
+
+                        <!-- Plus / Add button -->
+                        <Button
+                            Grid.Column="3"
+                            Content="+"
+                            Width="32" Height="32"
+                            VerticalAlignment="Center"
+                            IsEnabled="{x:Bind IsAvailable}"/>
+
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+    </Grid>
+</Page>

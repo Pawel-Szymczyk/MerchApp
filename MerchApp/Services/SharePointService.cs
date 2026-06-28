@@ -71,14 +71,24 @@ namespace MerchApp.Services
             ctx.Load(spItems);
             await ctx.ExecuteQueryAsync();
 
-            var items = spItems.Select(i => new Item
+            var items = new List<Item>();
+            foreach (var i in spItems)
             {
-                Id = i.Id,
-                Title = i["Title"].ToString() ?? string.Empty,
-                Description = i["Description"].ToString() ?? string.Empty,
-                TotalCount = i["TotalCount"] != null ? Convert.ToInt32(i["TotalCount"]) : 1,
-                AvailableCount = i["TotalCount"] != null ? Convert.ToInt32(i["TotalCount"]) : 1
-            }).ToList();
+                items.Add(new Item
+                {
+                    Id = i.Id,
+                    Title = i["Title"]?.ToString() ?? string.Empty,
+                    Description = i.FieldValues.ContainsKey("Description") && i["Description"] != null
+                                       ? i["Description"].ToString()
+                                       : string.Empty,
+                    TotalCount = i.FieldValues.ContainsKey("TotalCount") && i["TotalCount"] != null
+                                       ? Convert.ToInt32(i["TotalCount"])
+                                       : 1,
+                    AvailableCount = i.FieldValues.ContainsKey("TotalCount") && i["TotalCount"] != null
+                                       ? Convert.ToInt32(i["TotalCount"])
+                                       : 1
+                });
+            }
 
             // Calculate AvailableCount by subtracting active rentals
             var activeRentals = await GetActiveRentalItemsAsync(ctx);
@@ -304,19 +314,41 @@ namespace MerchApp.Services
             ctx.Load(spItems);
             await ctx.ExecuteQueryAsync();
 
-            var requests = spItems.Select(i => new RentalRequest
+            var requests = new List<RentalRequest>();
+            foreach (var i in spItems)
             {
-                Id = i.Id,
-                UserEmail = i["UserEmail"].ToString() ?? string.Empty,
-                UserDisplayName = i["UserDisplayName"].ToString() ?? string.Empty,
-                Status = ParseStatus(i["Status"].ToString()),
-                RentalFrom = i["RentalFrom"] != null ? (DateTime)i["RentalFrom"] : DateTime.Today,
-                RentalTo = i["RentalTo"] != null ? (DateTime)i["RentalTo"] : DateTime.Today,
-                ReturnedDate = i["ReturnedDate"] != null ? (DateTime?)i["ReturnedDate"] : null,
-                ManagerNote = i["ManagerNote"].ToString() ?? string.Empty,
-                Purpose = i["Purpose"].ToString() ?? string.Empty,
-                RequestDate = i["Created"] != null ? (DateTime)i["Created"] : DateTime.Now
-            }).ToList();
+                requests.Add(new RentalRequest
+                {
+                    Id = i.Id,
+                    UserEmail = i.FieldValues.ContainsKey("UserEmail") && i["UserEmail"] != null
+                                          ? i["UserEmail"].ToString()
+                                          : string.Empty,
+                    UserDisplayName = i.FieldValues.ContainsKey("UserDisplayName") && i["UserDisplayName"] != null
+                                          ? i["UserDisplayName"].ToString()
+                                          : string.Empty,
+                    Status = ParseStatus(i.FieldValues.ContainsKey("Status")
+                                          ? i["Status"]?.ToString()
+                                          : null),
+                    RentalFrom = i.FieldValues.ContainsKey("RentalFrom") && i["RentalFrom"] != null
+                                          ? (DateTime)i["RentalFrom"]
+                                          : DateTime.Today,
+                    RentalTo = i.FieldValues.ContainsKey("RentalTo") && i["RentalTo"] != null
+                                          ? (DateTime)i["RentalTo"]
+                                          : DateTime.Today,
+                    ReturnedDate = i.FieldValues.ContainsKey("ReturnedDate") && i["ReturnedDate"] != null
+                                          ? (DateTime?)i["ReturnedDate"]
+                                          : null,
+                    ManagerNote = i.FieldValues.ContainsKey("ManagerNote") && i["ManagerNote"] != null
+                                          ? i["ManagerNote"].ToString()
+                                          : string.Empty,
+                    Purpose = i.FieldValues.ContainsKey("Purpose") && i["Purpose"] != null
+                                          ? i["Purpose"].ToString()
+                                          : string.Empty,
+                    RequestDate = i.FieldValues.ContainsKey("Created") && i["Created"] != null
+                                          ? (DateTime)i["Created"]
+                                          : DateTime.Now
+                });
+            }
 
             if (requests.Any())
             {
@@ -368,14 +400,27 @@ namespace MerchApp.Services
             ctx.Load(spItems);
             await ctx.ExecuteQueryAsync();
 
-            return spItems.Select(i => new RentalItem
+            var result = new List<RentalItem>();
+            foreach (var i in spItems)
             {
-                Id = i.Id,
-                RequestId = Convert.ToInt32(i["RequestId"]),
-                ItemId = Convert.ToInt32(i["ItemId"]),
-                ItemName = i["ItemName"].ToString() ?? string.Empty,
-                Quantity = Convert.ToInt32(i["Quantity"])
-            }).ToList();
+                result.Add(new RentalItem
+                {
+                    Id = i.Id,
+                    RequestId = i.FieldValues.ContainsKey("RequestId") && i["RequestId"] != null
+                                    ? Convert.ToInt32(i["RequestId"])
+                                    : 0,
+                    ItemId = i.FieldValues.ContainsKey("ItemId") && i["ItemId"] != null
+                                    ? Convert.ToInt32(i["ItemId"])
+                                    : 0,
+                    ItemName = i.FieldValues.ContainsKey("ItemName") && i["ItemName"] != null
+                                    ? i["ItemName"].ToString()
+                                    : string.Empty,
+                    Quantity = i.FieldValues.ContainsKey("Quantity") && i["Quantity"] != null
+                                    ? Convert.ToInt32(i["Quantity"])
+                                    : 1
+                });
+            }
+            return result;
         }
 
         private async Task<List<RentalItem>> GetActiveRentalItemsAsync(ClientContext ctx)

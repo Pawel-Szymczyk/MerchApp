@@ -28,7 +28,11 @@ namespace MerchApp.Services
 
             var sp = _settingsService.Settings.SharePoint;
 
-            _scopes = new[] { $"{sp.SiteUrl}/.default" };
+            _scopes = new[]
+             {
+                "https://pawelszymczykitservices.sharepoint.com/AllSites.Read",
+                "https://pawelszymczykitservices.sharepoint.com/AllSites.Write"
+            };
 
             _msalClient = PublicClientApplicationBuilder
                 .Create(sp.ClientId)

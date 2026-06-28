@@ -138,17 +138,16 @@ namespace MerchApp.ViewModels
         // Property change handlers
         // -------------------------------------------------------------------------
 
-        public void OnRentalFromChanged(DateTime value)
+        partial void OnRentalFromChanged(DateTime oldValue, DateTime newValue)
         {
-            // Ensure RentalTo is always after RentalFrom
-            if (RentalTo <= value)
-                RentalTo = value.AddDays(1);
+            if (RentalTo <= newValue)
+                RentalTo = newValue.AddDays(1);
 
             UpdateRentalDays();
             OnPropertyChanged(nameof(IsDateRangeValid));
         }
 
-        public void OnRentalToChanged(DateTime value)
+        partial void OnRentalToChanged(DateTime oldValue, DateTime newValue)
         {
             UpdateRentalDays();
             OnPropertyChanged(nameof(IsDateRangeValid));

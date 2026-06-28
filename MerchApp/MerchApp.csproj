@@ -14,11 +14,16 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <Page Remove="views\CartPage.xaml" />
-    <Page Remove="views\ItemsPage.xaml" />
-    <Page Remove="views\LoginPage.xaml" />
-    <Page Remove="views\ManagerPage.xaml" />
-    <Page Remove="views\MyRentalsPage.xaml" />
+    <None Remove="ItemsPage.xaml" />
+    <None Remove="Views\CartPage.xaml" />
+    <None Remove="Views\InventoryPage.xaml" />
+    <None Remove="Views\ItemsPage.xaml" />
+    <None Remove="Views\LoginPage.xaml" />
+    <None Remove="Views\ManagerPage.xaml" />
+    <None Remove="Views\MyRentalsPage.xaml" />
+    <None Remove="Views\NotificationsPage.xaml" />
+    <None Remove="Views\SettingsPage.xaml" />
+    <None Remove="Views\ShellPage.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,24 +65,36 @@
     <None Update="Config\appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Views\CartPage.xaml">
+    <Page Update="Views\NotificationsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Views\ItemsPage.xaml">
+    </Page>
+    <Page Update="Views\SettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Views\LoginPage.xaml">
+    </Page>
+    <Page Update="Views\InventoryPage.xaml">
       <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Views\ManagerPage.xaml">
+    </Page>
+    <Page Update="Views\ManagerPage.xaml">
       <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Views\MyRentalsPage.xaml">
+    </Page>
+    <Page Update="Views\MyRentalsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\" />
+    </Page>
+    <Page Update="Views\CartPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\ItemsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\LoginPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\ShellPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="ItemsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <!--

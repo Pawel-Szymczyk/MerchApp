@@ -17,6 +17,8 @@ namespace MerchApp.ViewModels
         private readonly ICartService _cartService;
         private readonly ISessionContext _session;
 
+        public event EventHandler? NavigateToCart;
+
         // -------------------------------------------------------------------------
         // Observable properties
         // -------------------------------------------------------------------------
@@ -126,6 +128,12 @@ namespace MerchApp.ViewModels
         {
             ShowOnlyAvailable = !ShowOnlyAvailable;
             ApplyFilter();
+        }
+
+        [RelayCommand]
+        private void GoToCart()
+        {
+            NavigateToCart?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
