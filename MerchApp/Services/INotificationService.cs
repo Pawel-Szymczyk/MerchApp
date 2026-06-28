@@ -31,5 +31,10 @@ namespace MerchApp.Services
 
         /// <summary>Clears all notifications.</summary>
         void Clear();
+
+        void NotifyRequestApproved(string itemsSummary);
+        void NotifyRequestRejected(string reason);
+        void NotifyReturnDueSoon(string itemName, DateTime dueDate);
+        void NotifyNewRequest(string userName, string itemsSummary);
     }
 }

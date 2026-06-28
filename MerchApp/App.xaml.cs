@@ -65,7 +65,7 @@ namespace MerchApp
             services.AddSingleton<IAuthService,  AuthService>();
             services.AddSingleton<ISessionContext,  SessionContext>();
             services.AddSingleton<ISharePointService, SharePointService>();
-            //services.AddSingleton<ICartService, CartService>();
+            services.AddSingleton<ICartService, CartService>();
             services.AddSingleton<INotificationService, NotificationService>();
 
             // ViewModels
@@ -74,8 +74,8 @@ namespace MerchApp
             services.AddTransient<CartViewModel>();
             services.AddTransient<MyRentalsViewModel>();
             services.AddTransient<ManagerViewModel>();
-            //services.AddTransient<InventoryViewModel>();
-            //services.AddTransient<SettingsViewModel>();
+            services.AddTransient<InventoryViewModel>();
+            services.AddTransient<SettingsViewModel>();
 
             // Windows
             services.AddSingleton<MainWindow>();
