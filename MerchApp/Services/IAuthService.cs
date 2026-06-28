@@ -8,7 +8,7 @@ namespace MerchApp.Services
         AppUser? CurrentUser { get; }
         bool IsLoggedIn { get; }
 
-        Task<AppUser> LoginAsync();
+        Task<AppUser?> LoginAsync();
         Task<string> GetAccessTokenAsync();
         Task LogoutAsync();
     }
