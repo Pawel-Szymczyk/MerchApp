@@ -1,14 +1,202 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Page
     x:Class="MerchApp.Views.CartPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:MerchApp.Views"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    xmlns:models="using:MerchApp.Models"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <Grid RowSpacing="16" Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Spacing="4">
+            <TextBlock
+                Text="Your Request"
+                Style="{StaticResource TitleLargeTextBlockStyle}"/>
+            <TextBlock
+                Text="Review items, set dates and submit to manager"
+                Style="{StaticResource CaptionTextBlockStyle}"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+        </StackPanel>
+
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Spacing="16">
+
+                <!-- Empty state -->
+                <StackPanel
+                    Spacing="12"
+                    HorizontalAlignment="Center"
+                    Margin="0,48,0,0"
+                    Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <FontIcon
+                        Glyph="&#xE7BF;"
+                        FontSize="48"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    <TextBlock
+                        Text="Your cart is empty"
+                        Style="{StaticResource SubtitleTextBlockStyle}"
+                        HorizontalAlignment="Center"/>
+                    <TextBlock
+                        Text="Go back to the catalogue and add items"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        HorizontalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Cart items -->
+                <ListView
+                    ItemsSource="{x:Bind ViewModel.CartItems, Mode=OneWay}"
+                    SelectionMode="None"
+                    Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay, Converter={StaticResource BoolNegationToVisibilityConverter}}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:CartItem">
+                            <Grid Padding="0,8" ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                    <TextBlock
+                                        Text="{x:Bind Item.Title}"
+                                        Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                                </StackPanel>
+
+                                <TextBlock
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource BodyStrongTextBlockStyle}">
+                                    <Run Text="×"/>
+                                    <Run Text="{x:Bind Quantity}"/>
+                                </TextBlock>
+
+                                <Button
+                                    Grid.Column="2"
+                                    Content="✕"
+                                    Width="32" Height="32"
+                                    VerticalAlignment="Center"
+                                    FontSize="12"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <!-- Divider -->
+                <Border
+                    Height="1"
+                    Background="{ThemeResource DividerStrokeColorDefaultBrush}"
+                    Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay, Converter={StaticResource BoolNegationToVisibilityConverter}}"/>
+
+                <!-- Dates -->
+                <StackPanel
+                    Spacing="12"
+                    Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay, Converter={StaticResource BoolNegationToVisibilityConverter}}">
+
+                    <TextBlock
+                        Text="Rental period"
+                        Style="{StaticResource BodyStrongTextBlockStyle}"/>
+
+                    <Grid ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Spacing="4">
+                            <TextBlock
+                                Text="From"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <CalendarDatePicker
+                                HorizontalAlignment="Stretch"
+                                Date="{x:Bind ViewModel.RentalFrom, Mode=TwoWay}"
+                                MinDate="{x:Bind ViewModel.Today}"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Spacing="4">
+                            <TextBlock
+                                Text="To"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <CalendarDatePicker
+                                HorizontalAlignment="Stretch"
+                                Date="{x:Bind ViewModel.RentalTo, Mode=TwoWay}"
+                                MinDate="{x:Bind ViewModel.RentalFrom}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Duration -->
+                    <TextBlock
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                        <Run Text="Duration:"/>
+                        <Run Text="{x:Bind ViewModel.RentalDays, Mode=OneWay}"/>
+                        <Run Text="days"/>
+                    </TextBlock>
+
+                </StackPanel>
+
+                <!-- Purpose -->
+                <StackPanel
+                    Spacing="4"
+                    Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay, Converter={StaticResource BoolNegationToVisibilityConverter}}">
+                    <TextBlock
+                        Text="Purpose / note (optional)"
+                        Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                    <TextBox
+                        PlaceholderText="e.g. Conference stand, awareness event..."
+                        Text="{x:Bind ViewModel.Purpose, Mode=TwoWay}"
+                        AcceptsReturn="True"
+                        Height="80"
+                        TextWrapping="Wrap"/>
+                </StackPanel>
+
+                <!-- Error -->
+                <InfoBar
+                    IsOpen="{x:Bind ViewModel.HasError, Mode=OneWay}"
+                    Severity="Error"
+                    Title="Error"
+                    Message="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}"/>
+
+                <!-- Success -->
+                <InfoBar
+                    IsOpen="{x:Bind ViewModel.IsSubmitted, Mode=OneWay}"
+                    Severity="Success"
+                    Title="Request submitted!"
+                    Message="The manager will review your request and notify you by email."/>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Footer buttons -->
+        <Grid
+            Grid.Row="2"
+            ColumnSpacing="12"
+            Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay, Converter={StaticResource BoolNegationToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Button
+                Grid.Column="0"
+                Content="Clear cart"
+                HorizontalAlignment="Stretch"
+                Command="{x:Bind ViewModel.ClearCartCommand}"/>
+
+            <Button
+                Grid.Column="1"
+                Content="Submit request"
+                Style="{StaticResource AccentButtonStyle}"
+                Command="{x:Bind ViewModel.SubmitRequestCommand}"
+                IsEnabled="{x:Bind ViewModel.IsBusy, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"/>
+        </Grid>
 
     </Grid>
 </Page>

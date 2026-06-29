@@ -29,39 +29,26 @@
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
             </StackPanel>
 
-            <!-- Cart button with badge -->
+            <!-- Cart button -->
             <Button
                 Grid.Column="1"
                 VerticalAlignment="Center"
+                Style="{StaticResource AccentButtonStyle}"
                 Command="{x:Bind ViewModel.GoToCartCommand}">
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <FontIcon Glyph="&#xE7BF;" FontSize="16"/>
                     <TextBlock Text="Cart"/>
-                    <InfoBadge
-                        Value="{x:Bind ViewModel.CartCount, Mode=OneWay}"
-                        Visibility="{x:Bind ViewModel.CartCount, Mode=OneWay, Converter={StaticResource IntToVisibilityConverter}}"/>
+                    <TextBlock Text="{x:Bind ViewModel.CartCount, Mode=OneWay}"/>
                 </StackPanel>
             </Button>
         </Grid>
 
-        <!-- Search + filter -->
-        <Grid Grid.Row="1" ColumnSpacing="8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-
-            <AutoSuggestBox
-                Grid.Column="0"
-                PlaceholderText="Search items..."
-                QueryIcon="Find"
-                Text="{x:Bind ViewModel.SearchQuery, Mode=TwoWay}"/>
-
-            <ToggleButton
-                Grid.Column="1"
-                Content="Available only"
-                IsChecked="{x:Bind ViewModel.ShowOnlyAvailable, Mode=TwoWay}"/>
-        </Grid>
+        <!-- Search -->
+        <AutoSuggestBox
+            Grid.Row="1"
+            PlaceholderText="Search items..."
+            QueryIcon="Find"
+            Text="{x:Bind ViewModel.SearchQuery, Mode=TwoWay}"/>
 
         <!-- Loading -->
         <ProgressRing
@@ -77,8 +64,10 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Visibility="{x:Bind ViewModel.HasError, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-            <FontIcon Glyph="&#xE783;" FontSize="48"
-                      Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
+            <FontIcon
+                Glyph="&#xE783;"
+                FontSize="48"
+                Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
             <TextBlock
                 Text="Could not connect to SharePoint"
                 Style="{StaticResource SubtitleTextBlockStyle}"
@@ -98,48 +87,48 @@
         <ListView
             Grid.Row="2"
             ItemsSource="{x:Bind ViewModel.FilteredItems, Mode=OneWay}"
-            SelectionMode="None">
+            SelectionMode="None"
+            Visibility="{x:Bind ViewModel.HasError, Mode=OneWay, Converter={StaticResource BoolNegationToVisibilityConverter}}">
 
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="models:Item">
-                    <Grid Padding="0,8" ColumnSpacing="16">
+                    <Grid Padding="0,12" ColumnSpacing="12">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="32"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <!-- Item name + availability -->
-                        <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
-                            <TextBlock
-                                Text="{x:Bind Title}"
-                                Style="{StaticResource BodyStrongTextBlockStyle}"/>
-                           
-                        </StackPanel>
+                        <!-- Item name -->
+                        <TextBlock
+                            Grid.Column="0"
+                            Text="{x:Bind Title}"
+                            Style="{StaticResource BodyStrongTextBlockStyle}"
+                            VerticalAlignment="Center"/>
 
-                        <!-- Minus button -->
+                        <!-- Minus -->
                         <Button
                             Grid.Column="1"
                             Content="−"
                             Width="32" Height="32"
-                            VerticalAlignment="Center"/>
+                            VerticalAlignment="Center"
+                            FontSize="16"/>
 
                         <!-- Quantity -->
                         <TextBlock
                             Grid.Column="2"
-                            Width="24"
                             TextAlignment="Center"
                             VerticalAlignment="Center"
                             Style="{StaticResource BodyStrongTextBlockStyle}"/>
 
-                        <!-- Plus / Add button -->
+                        <!-- Plus -->
                         <Button
                             Grid.Column="3"
                             Content="+"
                             Width="32" Height="32"
                             VerticalAlignment="Center"
-                            />
+                            FontSize="16"/>
 
                     </Grid>
                 </DataTemplate>

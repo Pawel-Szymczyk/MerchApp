@@ -26,10 +26,10 @@ namespace MerchApp.ViewModels
         private ObservableCollection<CartItem> _cartItems = new();
 
         [ObservableProperty]
-        private DateTime _rentalFrom = DateTime.Today;
+        private DateTimeOffset _rentalFrom = DateTimeOffset.Now;
 
         [ObservableProperty]
-        private DateTime _rentalTo = DateTime.Today.AddDays(7);
+        private DateTimeOffset _rentalTo = DateTimeOffset.Now.AddDays(7);
 
         [ObservableProperty]
         private string _purpose = string.Empty;
@@ -53,6 +53,10 @@ namespace MerchApp.ViewModels
 
         public bool IsEmpty => _cartService.IsEmpty;
         public bool IsDateRangeValid => _rentalTo > _rentalFrom;
+
+        public DateTimeOffset Today => DateTimeOffset.Now;
+
+        public event EventHandler? RequestSubmitted;
 
         public CartViewModel(
             ISharePointService sharePointService,
@@ -106,8 +110,8 @@ namespace MerchApp.ViewModels
                 await _sharePointService.CreateRentalRequestAsync(
                     _session.CurrentUser,
                     _cartService.Items.ToList(),
-                    RentalFrom,
-                    RentalTo,
+                    RentalFrom.DateTime,
+                    RentalTo.DateTime,
                     Purpose);
 
                 // Notify manager
@@ -122,6 +126,7 @@ namespace MerchApp.ViewModels
                 _cartService.Clear();
 
                 IsSubmitted = true;
+                RequestSubmitted?.Invoke(this, EventArgs.Empty);
             }
             catch (Exception ex)
             {
@@ -138,20 +143,20 @@ namespace MerchApp.ViewModels
         // Property change handlers
         // -------------------------------------------------------------------------
 
-        partial void OnRentalFromChanged(DateTime oldValue, DateTime newValue)
-        {
-            if (RentalTo <= newValue)
-                RentalTo = newValue.AddDays(1);
+        //partial void OnRentalFromChanged(DateTime oldValue, DateTime newValue)
+        //{
+        //    if (RentalTo <= newValue)
+        //        RentalTo = newValue.AddDays(1);
 
-            UpdateRentalDays();
-            OnPropertyChanged(nameof(IsDateRangeValid));
-        }
+        //    UpdateRentalDays();
+        //    OnPropertyChanged(nameof(IsDateRangeValid));
+        //}
 
-        partial void OnRentalToChanged(DateTime oldValue, DateTime newValue)
-        {
-            UpdateRentalDays();
-            OnPropertyChanged(nameof(IsDateRangeValid));
-        }
+        //partial void OnRentalToChanged(DateTime oldValue, DateTime newValue)
+        //{
+        //    UpdateRentalDays();
+        //    OnPropertyChanged(nameof(IsDateRangeValid));
+        //}
 
         // -------------------------------------------------------------------------
         // Helpers

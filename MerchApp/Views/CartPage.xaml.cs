@@ -31,6 +31,7 @@ namespace MerchApp.Views
         {
             InitializeComponent();
             ViewModel = App.Current.Services.GetRequiredService<CartViewModel>();
+            ViewModel.RequestSubmitted += (_, _) => Frame.GoBack();
         }
     }
 }

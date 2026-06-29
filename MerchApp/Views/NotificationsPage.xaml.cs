@@ -1,3 +1,4 @@
+using MerchApp.Models;
 using MerchApp.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
@@ -9,6 +10,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -25,14 +27,34 @@ namespace MerchApp.Views
     /// </summary>
     public sealed partial class NotificationsPage : Page
     {
-        public INotificationService NotificationService { get; }
+        private readonly INotificationService _notificationService;
+        private ObservableCollection<AppNotification> _notifications = new();
 
         public NotificationsPage()
         {
             InitializeComponent();
-            NotificationService = App.Current.Services
+            _notificationService = App.Current.Services
                 .GetRequiredService<INotificationService>();
-            NotificationService.MarkAllAsRead();
+
+            LoadNotifications();
+
+            _notificationService.NotificationsChanged += (_, _) =>
+                DispatcherQueue.TryEnqueue(LoadNotifications);
+        }
+
+        private void LoadNotifications()
+        {
+            _notifications.Clear();
+            foreach (var n in _notificationService.Notifications)
+                _notifications.Add(n);
+
+            NotificationsList.ItemsSource = _notifications;
+            _notificationService.MarkAllAsRead();
+        }
+
+        private void ClearAll_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            _notificationService.Clear();
         }
     }
 }
