@@ -67,13 +67,22 @@ namespace MerchApp.Views
             //InventoryItem.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
         }
 
-        private void NavView_SelectionChanged(
+        private async void NavView_SelectionChanged(
             NavigationView sender,
             NavigationViewSelectionChangedEventArgs args)
         {
             if (args.SelectedItem is not NavigationViewItem item) return;
 
             var tag = item.Tag?.ToString();
+
+            if (tag == "SignOut")
+            {
+                var auth = App.Current.Services.GetRequiredService<IAuthService>();
+                var session = App.Current.Services.GetRequiredService<ISessionContext>();
+                await auth.LogoutAsync();
+                session.ClearUser();
+                return;
+            }
 
             //var pageType = tag switch
             //{
@@ -92,6 +101,7 @@ namespace MerchApp.Views
                 "MyRentals" => typeof(MyRentalsPage),
                 "Notifications" => typeof(NotificationsPage),
                 "Requests" => typeof(ManagerPage),
+                "SignOut" => null,
                 _ => typeof(ItemsPage)
             };
 

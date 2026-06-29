@@ -93,6 +93,13 @@
                     <FontIcon Glyph="&#xE713;"/>
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
+            <NavigationViewItem
+                Content="Sign out"
+                Tag="SignOut">      
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xF3B1;"/>
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
         </NavigationView.FooterMenuItems>
 
         <!-- Content frame -->
