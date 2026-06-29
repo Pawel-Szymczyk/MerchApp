@@ -35,62 +35,18 @@ namespace MerchApp.Views
             Loaded += async (_, _) => await ViewModel.LoadCommand.ExecuteAsync(null);
         }
 
-        private async void RequestItem_Click(object sender, ItemClickEventArgs e)
+        private void RequestRow_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
-            if (e.ClickedItem is not SelectableRequest selectable) return;
+            if (sender is not Grid grid) return;
+            if (grid.DataContext is not SelectableRequest selectable) return;
 
-            var request = selectable.Request;
+            ViewModel.ToggleExpandCommand.Execute(selectable);
+        }
 
-            var panel = new StackPanel { Spacing = 12 };
-
-            // Items
-            foreach (var item in request.Items)
-                panel.Children.Add(new TextBlock
-                {
-                    Text = $"{item.ItemName}  ×{item.Quantity}"
-                });
-
-            // Dates
-            panel.Children.Add(new TextBlock
-            {
-                Text = $"{request.RentalFrom:d MMM yyyy}  →  {request.RentalTo:d MMM yyyy}",
-                Foreground = (Microsoft.UI.Xaml.Media.Brush)
-                    Application.Current.Resources["TextFillColorSecondaryBrush"]
-            });
-
-            // Purpose
-            if (!string.IsNullOrWhiteSpace(request.Purpose))
-                panel.Children.Add(new TextBlock
-                {
-                    Text = $"Purpose: {request.Purpose}"
-                });
-
-            // Manager note
-            if (!string.IsNullOrWhiteSpace(request.ManagerNote))
-                panel.Children.Add(new TextBlock
-                {
-                    Text = $"Note: {request.ManagerNote}"
-                });
-
-            var dialog = new ContentDialog
-            {
-                Title = request.UserDisplayName,
-                Content = panel,
-                CloseButtonText = "Close",
-                XamlRoot = XamlRoot
-            };
-
-            // Mark as returned button for approved requests
-            if (request.Status == RentalStatus.Approved)
-                dialog.PrimaryButtonText = "Mark as Returned";
-
-            var result = await dialog.ShowAsync();
-
-            if (result == ContentDialogResult.Primary &&
-                request.Status == RentalStatus.Approved)
-            {
-                await ViewModel.MarkAsReturnedCommand.ExecuteAsync(request);
-            }
+        private void Checkbox_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            // Zatrzymaj propagację — kliknięcie checkboxa nie powinno rozwijać detali
+            e.Handled = true;
         }
     }
 }

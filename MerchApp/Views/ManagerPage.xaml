@@ -46,7 +46,6 @@
             Spacing="8">
             <RadioButton
                 Content="All"
-                IsChecked="False"
                 Command="{x:Bind ViewModel.FilterByCommand}"
                 CommandParameter="All"/>
             <RadioButton
@@ -79,8 +78,7 @@
             <CheckBox
                 Grid.Column="0"
                 Content="Select all"
-                IsChecked="{x:Bind ViewModel.AllSelected, Mode=TwoWay}"
-                VerticalAlignment="Center"/>
+                IsChecked="{x:Bind ViewModel.AllSelected, Mode=TwoWay}"/>
 
             <TextBlock
                 Grid.Column="2"
@@ -113,107 +111,170 @@
         <ListView
             Grid.Row="3"
             ItemsSource="{x:Bind ViewModel.FilteredRequests, Mode=OneWay}"
-            SelectionMode="None"
-            ItemClick="RequestItem_Click"
-            IsItemClickEnabled="True">
+            SelectionMode="None">
+
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="Padding" Value="0"/>
+                </Style>
+            </ListView.ItemContainerStyle>
 
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="vm:SelectableRequest">
-                    <Grid Padding="0,12" ColumnSpacing="12">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+                    <StackPanel>
 
-                        <!-- Checkbox -->
-                        <CheckBox
-                            Grid.Column="0"
-                            IsChecked="{x:Bind IsSelected, Mode=TwoWay}"
-                            VerticalAlignment="Center"/>
+                        <!-- Row -->
+                        <Grid
+                            Padding="8,12"
+                            ColumnSpacing="12"
+                            Tapped="RequestRow_Tapped">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                        <!-- Avatar -->
-                        <Border
-                            Grid.Column="1"
-                            Width="36" Height="36"
-                            CornerRadius="18"
-                            Background="{ThemeResource AccentFillColorDefaultBrush}"
-                            VerticalAlignment="Center">
-                            <TextBlock
-                                FontSize="12"
-                                FontWeight="SemiBold"
-                                Foreground="White"
-                                HorizontalAlignment="Center"
+                            <!-- Checkbox -->
+                            <CheckBox
+                                Grid.Column="0"
+                                IsChecked="{x:Bind IsSelected, Mode=TwoWay}"
                                 VerticalAlignment="Center"
-                                Text="{x:Bind Request.Initials}"/>
+                                Tapped="Checkbox_Tapped"/>
+
+                            <!-- Avatar -->
+                            <Border
+                                Grid.Column="1"
+                                Width="36" Height="36"
+                                CornerRadius="18"
+                                Background="{ThemeResource AccentFillColorDefaultBrush}"
+                                VerticalAlignment="Center">
+                                <TextBlock
+                                    FontSize="12"
+                                    FontWeight="SemiBold"
+                                    Foreground="White"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Text="{x:Bind Request.Initials}"/>
+                            </Border>
+
+                            <!-- Info -->
+                            <StackPanel
+                                Grid.Column="2"
+                                Spacing="2"
+                                VerticalAlignment="Center">
+                                <TextBlock
+                                    Text="{x:Bind Request.UserDisplayName}"
+                                    Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                                <TextBlock
+                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                                    <Run Text="{x:Bind Request.RentalFrom}"/>
+                                    <Run Text="→"/>
+                                    <Run Text="{x:Bind Request.RentalTo}"/>
+                                </TextBlock>
+                            </StackPanel>
+
+                            <!-- Status -->
+                            <TextBlock
+                                Grid.Column="3"
+                                Text="{x:Bind Request.StatusDisplayName}"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Foreground="{x:Bind Request.Status, Converter={StaticResource StatusToColorConverter}}"/>
+
+                        </Grid>
+
+                        <!-- Expanded details -->
+                        <!-- Expanded details -->
+                        <Border
+                            Padding="16"
+                            Margin="0,0,0,4"
+                            CornerRadius="8"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource AccentFillColorDefaultBrush}"
+                            BorderThickness="1"
+                            Visibility="{x:Bind IsExpanded, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+
+                            <StackPanel Spacing="12">
+
+                                <!-- Items -->
+                                <StackPanel Spacing="4">
+                                    <TextBlock
+                                        Text="ITEMS"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                    <ItemsControl ItemsSource="{x:Bind Request.Items}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock
+                                                    Style="{StaticResource BodyTextBlockStyle}">
+                                                    <Run Text="{Binding ItemName}"/>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+
+                                <!-- Purpose -->
+                                <Border
+                                    Padding="12,8"
+                                    CornerRadius="6"
+                                    Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                    Visibility="{x:Bind Request.Purpose, Converter={StaticResource StringToVisibilityConverter}}">
+                                    <TextBlock
+                                        Text="{x:Bind Request.Purpose}"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        TextWrapping="Wrap"/>
+                                </Border>
+
+                                <!-- Dates -->
+                                <TextBlock
+                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                                    <Run Text="{x:Bind Request.RentalFrom}"/>
+                                    <Run Text="→"/>
+                                    <Run Text="{x:Bind Request.RentalTo}"/>
+                                </TextBlock>
+
+                            </StackPanel>
                         </Border>
 
-                        <!-- Info -->
-                        <StackPanel
-                            Grid.Column="2"
-                            Spacing="2"
-                            VerticalAlignment="Center">
-                            <TextBlock
-                                Text="{x:Bind Request.UserDisplayName}"
-                                Style="{StaticResource BodyStrongTextBlockStyle}"/>
-                            <TextBlock
-                                Style="{StaticResource CaptionTextBlockStyle}"
-                                Foreground="{ThemeResource TextFillColorSecondaryBrush}">
-                                <Run Text="{x:Bind Request.RentalFrom}"/>
-                                <Run Text="→"/>
-                                <Run Text="{x:Bind Request.RentalTo}"/>
-                            </TextBlock>
-                        </StackPanel>
-
-                        <!-- Status -->
-                        <TextBlock
-                            Grid.Column="3"
-                            Text="{x:Bind Request.StatusDisplayName}"
-                            VerticalAlignment="Center"
-                            Style="{StaticResource CaptionTextBlockStyle}"
-                            Foreground="{x:Bind Request.Status, Converter={StaticResource StatusToColorConverter}}"/>
-
-                    </Grid>
+                    </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
 
         <!-- Bottom action bar -->
         <Grid
-    Grid.Row="4"
-    ColumnSpacing="8"
-    Visibility="{x:Bind ViewModel.HasSelection, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+            Grid.Row="4"
+            ColumnSpacing="8"
+            Visibility="{x:Bind ViewModel.HasPendingSelection, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Reject reason -->
             <TextBox
-        Grid.Column="0"
-        PlaceholderText="Reject reason (optional)"
-        Text="{x:Bind ViewModel.RejectReason, Mode=TwoWay}"
-        Visibility="{x:Bind ViewModel.HasPendingSelection, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                Grid.Column="0"
+                PlaceholderText="Reject reason (optional)"
+                Text="{x:Bind ViewModel.RejectReason, Mode=TwoWay}"/>
 
-            <!-- Reject button — tylko gdy są Pending -->
             <Button
-        Grid.Column="1"
-        Content="Reject"
-        Foreground="Red"
-        Command="{x:Bind ViewModel.RejectSelectedCommand}"
-        IsEnabled="{x:Bind ViewModel.IsBusy, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"
-        Visibility="{x:Bind ViewModel.HasPendingSelection, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                Grid.Column="1"
+                Content="Reject"
+                Foreground="Red"
+                Command="{x:Bind ViewModel.RejectSelectedCommand}"
+                IsEnabled="{x:Bind ViewModel.IsBusy, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"/>
 
-            <!-- Approve button — tylko gdy są Pending -->
             <Button
-        Grid.Column="2"
-        Content="Approve"
-        Style="{StaticResource AccentButtonStyle}"
-        Command="{x:Bind ViewModel.ApproveSelectedCommand}"
-        IsEnabled="{x:Bind ViewModel.IsBusy, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"
-        Visibility="{x:Bind ViewModel.HasPendingSelection, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                Grid.Column="2"
+                Content="Approve"
+                Style="{StaticResource AccentButtonStyle}"
+                Command="{x:Bind ViewModel.ApproveSelectedCommand}"
+                IsEnabled="{x:Bind ViewModel.IsBusy, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"/>
         </Grid>
 
     </Grid>

@@ -21,6 +21,9 @@ namespace MerchApp.ViewModels
         [ObservableProperty]
         private bool _isSelected;
 
+        [ObservableProperty]
+        private bool _isExpanded;
+
         public SelectableRequest(RentalRequest request)
         {
             Request = request;
@@ -59,6 +62,9 @@ namespace MerchApp.ViewModels
 
         [ObservableProperty]
         private bool _allSelected;
+
+        [ObservableProperty]
+        private int _expandedRequestId = -1;
 
         // -------------------------------------------------------------------------
 
@@ -232,6 +238,23 @@ namespace MerchApp.ViewModels
             SelectedFilter = filter;
             ApplyFilter();
         }
+
+        [RelayCommand]
+        private void ToggleExpand(SelectableRequest request)
+        {
+            if (request is null) return;
+
+            var wasExpanded = request.IsExpanded;
+
+            // Zwiń wszystkie
+            foreach (var r in FilteredRequests)
+                r.IsExpanded = false;
+
+            // Rozwiń kliknięty jeśli był zwinięty
+            if (!wasExpanded)
+                request.IsExpanded = true;
+        }
+
 
         // -------------------------------------------------------------------------
         // Helpers

@@ -18,6 +18,7 @@
             <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>
             <converters:BoolNegationToVisibilityConverter x:Key="BoolNegationToVisibilityConverter"/>
             <converters:BoolToSelectedBrushConverter x:Key="BoolToSelectedBrushConverter"/>
+            <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
 
         </ResourceDictionary>
     </Application.Resources>
