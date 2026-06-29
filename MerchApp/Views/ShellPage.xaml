@@ -41,8 +41,6 @@
 
         <!-- Navigation items -->
         <NavigationView.MenuItems>
-
-            <!-- User items -->
             <NavigationViewItem
                 x:Name="CatalogItem"
                 Content="Catalogue"
@@ -70,8 +68,9 @@
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
 
-            <!-- Manager only items (hidden for users) -->
-            <NavigationViewItemSeparator x:Name="ManagerSeparator" Visibility="Collapsed"/>
+            <NavigationViewItemSeparator
+                x:Name="ManagerSeparator"
+                Visibility="Collapsed"/>
 
             <NavigationViewItem
                 x:Name="RequestsItem"
@@ -80,26 +79,6 @@
                 Visibility="Collapsed">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE8A1;"/>
-                </NavigationViewItem.Icon>
-            </NavigationViewItem>
-
-            <NavigationViewItem
-                x:Name="DashboardItem"
-                Content="Dashboard"
-                Tag="Dashboard"
-                Visibility="Collapsed">
-                <NavigationViewItem.Icon>
-                    <FontIcon Glyph="&#xE80F;"/>
-                </NavigationViewItem.Icon>
-            </NavigationViewItem>
-
-            <NavigationViewItem
-                x:Name="InventoryItem"
-                Content="Inventory"
-                Tag="Inventory"
-                Visibility="Collapsed">
-                <NavigationViewItem.Icon>
-                    <FontIcon Glyph="&#xE179;"/>
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
 

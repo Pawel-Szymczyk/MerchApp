@@ -29,8 +29,8 @@ namespace MerchApp.ViewModels
         [ObservableProperty]
         private RentalRequest? _selectedRequest;
 
-        [ObservableProperty]
-        private DashboardStats _stats = new();
+        //[ObservableProperty]
+        //private DashboardStats _stats = new();
 
         [ObservableProperty]
         private bool _isBusy;
@@ -78,7 +78,7 @@ namespace MerchApp.ViewModels
                 foreach (var r in requests)
                     AllRequests.Add(r);
 
-                Stats = await _sharePointService.GetDashboardStatsAsync();
+                //Stats = await _sharePointService.GetDashboardStatsAsync();
 
                 ApplyFilter();
             }

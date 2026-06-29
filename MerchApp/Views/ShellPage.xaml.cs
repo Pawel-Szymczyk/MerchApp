@@ -63,8 +63,8 @@ namespace MerchApp.Views
 
             ManagerSeparator.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
             RequestsItem.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
-            DashboardItem.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
-            InventoryItem.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
+            //DashboardItem.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
+            //InventoryItem.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
         }
 
         private void NavView_SelectionChanged(
@@ -75,15 +75,23 @@ namespace MerchApp.Views
 
             var tag = item.Tag?.ToString();
 
+            //var pageType = tag switch
+            //{
+            //    "Catalogue" => typeof(ItemsPage),
+            //    "MyRentals" => typeof(MyRentalsPage),
+            //    "Notifications" => typeof(NotificationsPage),
+            //    "Requests" => typeof(ManagerPage),
+            //    "Dashboard" => typeof(ManagerPage),
+            //    "Inventory" => typeof(InventoryPage),
+            //    "Settings" => typeof(SettingsPage),
+            //    _ => typeof(ItemsPage)
+            //};
             var pageType = tag switch
             {
                 "Catalogue" => typeof(ItemsPage),
                 "MyRentals" => typeof(MyRentalsPage),
                 "Notifications" => typeof(NotificationsPage),
                 "Requests" => typeof(ManagerPage),
-                "Dashboard" => typeof(ManagerPage),
-                "Inventory" => typeof(InventoryPage),
-                "Settings" => typeof(SettingsPage),
                 _ => typeof(ItemsPage)
             };
 

@@ -14,9 +14,8 @@ namespace MerchApp.Models
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public int TotalCount { get; set; } = 1;
-        public int AvailableCount { get; set; } = 1;
-
-        public bool IsAvailable => AvailableCount > 0;
+        //public int TotalCount { get; set; } = 1;
+        //public int AvailableCount { get; set; } = 1;
+        //public bool IsAvailable => AvailableCount > 0;
     }
 }

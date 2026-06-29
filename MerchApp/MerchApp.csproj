@@ -16,13 +16,11 @@
   <ItemGroup>
     <None Remove="ItemsPage.xaml" />
     <None Remove="Views\CartPage.xaml" />
-    <None Remove="Views\InventoryPage.xaml" />
     <None Remove="Views\ItemsPage.xaml" />
     <None Remove="Views\LoginPage.xaml" />
     <None Remove="Views\ManagerPage.xaml" />
     <None Remove="Views\MyRentalsPage.xaml" />
     <None Remove="Views\NotificationsPage.xaml" />
-    <None Remove="Views\SettingsPage.xaml" />
     <None Remove="Views\ShellPage.xaml" />
   </ItemGroup>
 
@@ -66,12 +64,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Page Update="Views\NotificationsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\SettingsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\InventoryPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Views\ManagerPage.xaml">

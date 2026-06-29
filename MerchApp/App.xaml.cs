@@ -74,8 +74,8 @@ namespace MerchApp
             services.AddTransient<CartViewModel>();
             services.AddTransient<MyRentalsViewModel>();
             services.AddTransient<ManagerViewModel>();
-            services.AddTransient<InventoryViewModel>();
-            services.AddTransient<SettingsViewModel>();
+            //services.AddTransient<InventoryViewModel>();
+            //services.AddTransient<SettingsViewModel>();
 
             // Windows
             services.AddSingleton<MainWindow>();

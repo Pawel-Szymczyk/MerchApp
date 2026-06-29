@@ -115,14 +115,7 @@
                             <TextBlock
                                 Text="{x:Bind Title}"
                                 Style="{StaticResource BodyStrongTextBlockStyle}"/>
-                            <TextBlock
-                                Style="{StaticResource CaptionTextBlockStyle}"
-                                Foreground="{ThemeResource TextFillColorSecondaryBrush}">
-                                <Run Text="Available: "/>
-                                <Run Text="{x:Bind AvailableCount}"/>
-                                <Run Text=" / "/>
-                                <Run Text="{x:Bind TotalCount}"/>
-                            </TextBlock>
+                           
                         </StackPanel>
 
                         <!-- Minus button -->
@@ -146,7 +139,7 @@
                             Content="+"
                             Width="32" Height="32"
                             VerticalAlignment="Center"
-                            IsEnabled="{x:Bind IsAvailable}"/>
+                            />
 
                     </Grid>
                 </DataTemplate>

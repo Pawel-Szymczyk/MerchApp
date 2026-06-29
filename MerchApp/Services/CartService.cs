@@ -25,17 +25,19 @@ namespace MerchApp.Services
 
             if (existing is not null)
             {
-                existing.Quantity = Math.Min(
-                    existing.Quantity + quantity,
-                    item.AvailableCount);
+                //existing.Quantity = Math.Min(
+                //    existing.Quantity + quantity,
+                //    item.AvailableCount);
+                existing.Quantity += quantity;
             }
             else
             {
-                _items.Add(new CartItem
-                {
-                    Item = item,
-                    Quantity = Math.Min(quantity, item.AvailableCount)
-                });
+                //_items.Add(new CartItem
+                //{
+                //    Item = item,
+                //    Quantity = Math.Min(quantity, item.AvailableCount)
+                //});
+                _items.Add(new CartItem { Item = item, Quantity = quantity });
             }
 
             RaiseCartChanged();
@@ -74,12 +76,14 @@ namespace MerchApp.Services
             }
 
             if (existing is not null)
-                existing.Quantity = Math.Min(quantity, item.AvailableCount);
+                //existing.Quantity = Math.Min(quantity, item.AvailableCount);
+                existing.Quantity = quantity;
             else
                 _items.Add(new CartItem
                 {
                     Item = item,
-                    Quantity = Math.Min(quantity, item.AvailableCount)
+                    //Quantity = Math.Min(quantity, item.AvailableCount)
+                    Quantity = quantity
                 });
 
             RaiseCartChanged();
