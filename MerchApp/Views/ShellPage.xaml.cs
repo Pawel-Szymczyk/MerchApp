@@ -31,15 +31,10 @@ namespace MerchApp.Views
         public ShellPage()
         {
             InitializeComponent();
-
             _session = App.Current.Services.GetRequiredService<ISessionContext>();
 
             SetupUserInfo();
-            SetupManagerItems();
-
-            // Navigate to Catalogue by default
-            ContentFrame.Navigate(typeof(ItemsPage));
-            NavView.SelectedItem = CatalogItem;
+            SetupNavigationForRole();
         }
 
         private void SetupUserInfo()
@@ -50,21 +45,33 @@ namespace MerchApp.Views
             UserNameText.Text = user.DisplayName;
             UserRoleText.Text = user.IsManager ? "Manager" : "User";
 
-            // Generate initials — e.g. "Jan Nowak" → "JN"
             var parts = user.DisplayName.Split(' ');
             AvatarInitials.Text = parts.Length >= 2
                 ? $"{parts[0][0]}{parts[1][0]}".ToUpper()
                 : user.DisplayName[..1].ToUpper();
         }
 
-        private void SetupManagerItems()
+        private void SetupNavigationForRole()
         {
-            if (!_session.IsManager) return;
+            if (_session.IsManager)
+            {
+                CatalogItem.Visibility = Visibility.Collapsed;
+                MyRentalsItem.Visibility = Visibility.Collapsed;
+                NotificationsItem.Visibility = Visibility.Collapsed;
+                ManagerSeparator.Visibility = Visibility.Collapsed;
+                RequestsItem.Visibility = Visibility.Visible;
 
-            ManagerSeparator.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
-            RequestsItem.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
-            //DashboardItem.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
-            //InventoryItem.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
+                ContentFrame.Navigate(typeof(ManagerPage));
+                NavView.SelectedItem = RequestsItem;
+            }
+            else
+            {
+                RequestsItem.Visibility = Visibility.Collapsed;
+                ManagerSeparator.Visibility = Visibility.Collapsed;
+
+                ContentFrame.Navigate(typeof(ItemsPage));
+                NavView.SelectedItem = CatalogItem;
+            }
         }
 
         private async void NavView_SelectionChanged(
@@ -84,24 +91,12 @@ namespace MerchApp.Views
                 return;
             }
 
-            //var pageType = tag switch
-            //{
-            //    "Catalogue" => typeof(ItemsPage),
-            //    "MyRentals" => typeof(MyRentalsPage),
-            //    "Notifications" => typeof(NotificationsPage),
-            //    "Requests" => typeof(ManagerPage),
-            //    "Dashboard" => typeof(ManagerPage),
-            //    "Inventory" => typeof(InventoryPage),
-            //    "Settings" => typeof(SettingsPage),
-            //    _ => typeof(ItemsPage)
-            //};
             var pageType = tag switch
             {
                 "Catalogue" => typeof(ItemsPage),
                 "MyRentals" => typeof(MyRentalsPage),
                 "Notifications" => typeof(NotificationsPage),
                 "Requests" => typeof(ManagerPage),
-                "SignOut" => null,
                 _ => typeof(ItemsPage)
             };
 

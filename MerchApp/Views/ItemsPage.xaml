@@ -38,7 +38,7 @@
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <FontIcon Glyph="&#xE7BF;" FontSize="16"/>
                     <TextBlock Text="Cart"/>
-                    <TextBlock Text="{x:Bind ViewModel.CartCount, Mode=OneWay}"/>
+                    <TextBlock x:Name="CartCountText"/>
                 </StackPanel>
             </Button>
         </Grid>
@@ -86,6 +86,7 @@
         <!-- Items list -->
         <ListView
             Grid.Row="2"
+            x:Name="ItemsList"
             ItemsSource="{x:Bind ViewModel.FilteredItems, Mode=OneWay}"
             SelectionMode="None"
             Visibility="{x:Bind ViewModel.HasError, Mode=OneWay, Converter={StaticResource BoolNegationToVisibilityConverter}}">
@@ -105,7 +106,7 @@
                             Grid.Column="0"
                             Text="{x:Bind Title}"
                             Style="{StaticResource BodyStrongTextBlockStyle}"
-                            VerticalAlignment="Center"/>
+                            VerticalAlignment="Center"/>        
 
                         <!-- Minus -->
                         <Button
@@ -113,14 +114,18 @@
                             Content="−"
                             Width="32" Height="32"
                             VerticalAlignment="Center"
-                            FontSize="16"/>
+                            FontSize="16"
+                            Tag="{x:Bind Id}"
+                            Click="RemoveItem_Click"/>  
 
                         <!-- Quantity -->
                         <TextBlock
                             Grid.Column="2"
+                            x:Name="QuantityText"
                             TextAlignment="Center"
                             VerticalAlignment="Center"
-                            Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                            Style="{StaticResource BodyStrongTextBlockStyle}"
+                            Tag="{x:Bind Id}"/>
 
                         <!-- Plus -->
                         <Button
@@ -128,7 +133,9 @@
                             Content="+"
                             Width="32" Height="32"
                             VerticalAlignment="Center"
-                            FontSize="16"/>
+                            FontSize="16"
+                            Tag="{x:Bind Id}"
+                            Click="AddItem_Click"/> 
 
                     </Grid>
                 </DataTemplate>

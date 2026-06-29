@@ -38,8 +38,8 @@ namespace MerchApp.Views
 
             LoadNotifications();
 
-            _notificationService.NotificationsChanged += (_, _) =>
-                DispatcherQueue.TryEnqueue(LoadNotifications);
+            _notificationService.NotificationsChanged += OnNotificationsChanged;
+            Unloaded += (_, _) => _notificationService.NotificationsChanged -= OnNotificationsChanged;
         }
 
         private void LoadNotifications()
@@ -56,5 +56,7 @@ namespace MerchApp.Views
         {
             _notificationService.Clear();
         }
+
+        private void OnNotificationsChanged(object? sender, System.EventArgs e)  => DispatcherQueue.TryEnqueue(LoadNotifications);
     }
 }
