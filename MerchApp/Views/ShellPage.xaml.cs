@@ -99,6 +99,7 @@ namespace MerchApp.Views
                 _ => typeof(ItemsPage)
             };
 
+            ContentFrame.BackStack.Clear();
             ContentFrame.Navigate(pageType);
         }
     }

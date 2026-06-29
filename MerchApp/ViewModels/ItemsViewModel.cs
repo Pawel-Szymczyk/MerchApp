@@ -12,56 +12,61 @@ using System.Threading.Tasks;
 
 namespace MerchApp.ViewModels
 {
+    /// <summary>
+    /// Wraps Item with IsSelected for checkbox support.
+    /// </summary>
+    public partial class SelectableItem : ObservableObject
+    {
+        public Item Item { get; }
+
+        [ObservableProperty]
+        private bool _isSelected;
+
+        public SelectableItem(Item item)
+        {
+            Item = item;
+        }
+    }
+
+
     public partial class ItemsViewModel : ObservableObject, IDisposable
     {
         private readonly ISharePointService _sharePointService;
         private readonly ICartService _cartService;
-        //private readonly ISessionContext _session;
-
-        
-
-        // -------------------------------------------------------------------------
-        // Observable properties
-        // -------------------------------------------------------------------------
-        [ObservableProperty]
-        private ObservableCollection<Item> _items = new();
 
         [ObservableProperty]
-        private ObservableCollection<Item> _filteredItems = new();
+        private ObservableCollection<SelectableItem> _items = new();
+
+        [ObservableProperty]
+        private ObservableCollection<SelectableItem> _filteredItems = new();
 
         [ObservableProperty]
         private bool _isBusy;
 
         [ObservableProperty]
-        private string _errorMessage = string.Empty;
+        private bool _hasError;
 
         [ObservableProperty]
-        private bool _hasError;
+        private string _errorMessage = string.Empty;
 
         [ObservableProperty]
         private string _searchQuery = string.Empty;
 
         [ObservableProperty]
-        private bool _showOnlyAvailable;
+        private int _selectedCount;
 
-        [ObservableProperty]
-        private int _cartCount = 0;
-
+        public bool HasSelection => SelectedCount > 0;
         public event EventHandler? NavigateToCart;
         public event EventHandler? CartChanged;
 
-        //public ItemsViewModel(ISharePointService sharePointService, ICartService cartService, ISessionContext session)
-        public ItemsViewModel(ISharePointService sharePointService, ICartService cartService)
+        public ItemsViewModel(
+            ISharePointService sharePointService,
+            ICartService cartService)
         {
             _sharePointService = sharePointService;
             _cartService = cartService;
             _cartService.CartChanged += OnCartChanged;
         }
-
-
-        // -------------------------------------------------------------------------
-        // Commands
-        // -------------------------------------------------------------------------
 
         [RelayCommand]
         private async Task LoadItemsAsync()
@@ -77,9 +82,21 @@ namespace MerchApp.ViewModels
                 var items = await _sharePointService.GetItemsAsync();
 
                 Items.Clear();
-                foreach(var item in items)
+                foreach (var item in items)
                 {
-                    Items.Add(item);
+                    var selectable = new SelectableItem(item);
+                    selectable.PropertyChanged += (_, _) =>
+                    {
+                        // Sync with cart
+                        if (selectable.IsSelected)
+                            _cartService.AddItem(selectable.Item);
+                        else
+                            _cartService.RemoveItem(selectable.Item);
+
+                        SelectedCount = _cartService.TotalCount;
+                        OnPropertyChanged(nameof(HasSelection));
+                    };
+                    Items.Add(selectable);
                 }
 
                 ApplyFilter();
@@ -96,26 +113,9 @@ namespace MerchApp.ViewModels
         }
 
         [RelayCommand]
-        private void AddToCart(Item item)
+        private void GoToCart()
         {
-            //if(item == null || !item.IsAvailable) return;
-            if(item == null) return;
-
-            _cartService.AddItem(item);
-        }
-
-        [RelayCommand]
-        private void RemoveFromCart(Item item)
-        {
-            if (item == null) return;
-
-            _cartService.RemoveItem(item);
-        }
-
-        [RelayCommand]
-        private void SetItemQuantity((Item item, int quantity) args)
-        {
-            _cartService.SetQuantity(args.item, args.quantity);
+            NavigateToCart?.Invoke(this, EventArgs.Empty);
         }
 
         [RelayCommand]
@@ -125,63 +125,31 @@ namespace MerchApp.ViewModels
             ApplyFilter();
         }
 
-        [RelayCommand]
-        private void ToggleAvailableOnly()
-        {
-            ShowOnlyAvailable = !ShowOnlyAvailable;
-            ApplyFilter();
-        }
-
-        [RelayCommand]
-        private void GoToCart()
-        {
-            NavigateToCart?.Invoke(this, EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Returns current quantity of an item in the cart.
-        /// Used by the View to show +/- controls.
-        /// </summary>
-        public int GetCartQuantity(Item item) =>
-            _cartService.GetQuantity(item);
-
-        /// <summary>
-        /// Returns true if the item is in the cart.
-        /// </summary>
-        public bool IsInCart(Item item) =>
-            _cartService.Contains(item);
-
         private void ApplyFilter()
         {
             var filtered = Items.AsEnumerable();
 
             if (!string.IsNullOrWhiteSpace(SearchQuery))
                 filtered = filtered.Where(i =>
-                    i.Title.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase));
-
-            //if (ShowOnlyAvailable)
-            //    filtered = filtered.Where(i => i.IsAvailable);
+                    i.Item.Title.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase));
 
             FilteredItems.Clear();
             foreach (var item in filtered)
                 FilteredItems.Add(item);
         }
 
-        // Called when SearchQuery property changes (auto-generated by ObservableProperty)
-        partial void OnSearchQueryChanged(string value) => ApplyFilter();
-        //partial void OnShowOnlyAvailableChanged(bool value) => ApplyFilter();
-
         private void OnCartChanged(object? sender, EventArgs e)
         {
-            CartCount = _cartService.TotalQuantity;
+            SelectedCount = _cartService.TotalCount;
+            OnPropertyChanged(nameof(HasSelection));
             CartChanged?.Invoke(this, EventArgs.Empty);
         }
+
+        partial void OnSearchQueryChanged(string value) => ApplyFilter();
 
         public void Dispose()
         {
             _cartService.CartChanged -= OnCartChanged;
         }
-
- 
     }
 }

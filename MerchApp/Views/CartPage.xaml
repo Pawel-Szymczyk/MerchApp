@@ -14,6 +14,10 @@
 
         <!-- Header -->
         <StackPanel Grid.Row="0" Spacing="4">
+            <HyperlinkButton
+                Content="← Back to Catalogue"
+                Click="BackToCatalogue_Click"
+                Margin="0,0,0,8"/>
             <TextBlock
                 Text="Your Request"
                 Style="{StaticResource TitleLargeTextBlockStyle}"/>
@@ -42,7 +46,7 @@
                         Style="{StaticResource SubtitleTextBlockStyle}"
                         HorizontalAlignment="Center"/>
                     <TextBlock
-                        Text="Go back to the catalogue and add items"
+                        Text="Go back to the catalogue and select items"
                         Style="{StaticResource CaptionTextBlockStyle}"
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         HorizontalAlignment="Center"/>
@@ -59,29 +63,22 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                                    <TextBlock
-                                        Text="{x:Bind Item.Title}"
-                                        Style="{StaticResource BodyStrongTextBlockStyle}"/>
-                                </StackPanel>
-
                                 <TextBlock
-                                    Grid.Column="1"
-                                    VerticalAlignment="Center"
-                                    Style="{StaticResource BodyStrongTextBlockStyle}">
-                                    <Run Text="×"/>
-                                    <Run Text="{x:Bind Quantity}"/>
-                                </TextBlock>
+                                    Grid.Column="0"
+                                    Text="{x:Bind Item.Title}"
+                                    Style="{StaticResource BodyStrongTextBlockStyle}"
+                                    VerticalAlignment="Center"/>
 
                                 <Button
-                                    Grid.Column="2"
+                                    Grid.Column="1"
                                     Content="✕"
                                     Width="32" Height="32"
                                     VerticalAlignment="Center"
-                                    FontSize="12"/>
+                                    FontSize="12"
+                                    Click="RemoveItem_Click"
+                                    Tag="{x:Bind Item.Id}"/>
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -186,7 +183,7 @@
 
             <Button
                 Grid.Column="0"
-                Content="Clear cart"
+                Content="Clear selection"
                 HorizontalAlignment="Stretch"
                 Command="{x:Bind ViewModel.ClearCartCommand}"/>
 

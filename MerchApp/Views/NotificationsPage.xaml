@@ -33,9 +33,11 @@
         <!-- Empty state -->
         <StackPanel
             Grid.Row="1"
+            x:Name="EmptyState"
             Spacing="12"
             HorizontalAlignment="Center"
-            VerticalAlignment="Center">
+            VerticalAlignment="Center"
+            Visibility="Collapsed">
             <FontIcon
                 Glyph="&#xEA8F;"
                 FontSize="48"

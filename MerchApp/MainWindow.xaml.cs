@@ -15,6 +15,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Graphics;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -30,8 +31,12 @@ namespace MerchApp
         {
             InitializeComponent();
 
-            var session = App.Current.Services.GetRequiredService<ISessionContext>();
+            // window size
+            var appWindow = AppWindow;
+            appWindow.Resize(new SizeInt32(900, 850));
 
+            var session = App.Current.Services.GetRequiredService<ISessionContext>();
+                
             // navigate to login or shell depending on session state
             if(session.IsLoggedIn)
             {

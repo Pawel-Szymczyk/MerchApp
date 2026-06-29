@@ -9,6 +9,8 @@
         PaneDisplayMode="Left"
         IsBackButtonVisible="Collapsed"
         IsSettingsVisible="False"
+        CompactPaneLength="48"
+        OpenPaneLength="240"
         SelectionChanged="NavView_SelectionChanged">
 
         <!-- Header — user info -->

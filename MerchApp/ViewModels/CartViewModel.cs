@@ -84,7 +84,7 @@ namespace MerchApp.ViewModels
         private void RemoveItem(CartItem cartItem)
         {
             if (cartItem is null) return;
-            _cartService.RemoveItem(cartItem.Item, cartItem.Quantity);
+            _cartService.RemoveItem(cartItem.Item);
         }
 
         [RelayCommand]
@@ -116,7 +116,7 @@ namespace MerchApp.ViewModels
 
                 // Notify manager
                 var itemsSummary = string.Join(", ",
-                    _cartService.Items.Select(i => $"{i.Item.Title} ×{i.Quantity}"));
+                    _cartService.Items.Select(i => i.Item.Title));
 
                 _notificationService.NotifyNewRequest(
                     _session.CurrentUser.DisplayName,
@@ -143,20 +143,20 @@ namespace MerchApp.ViewModels
         // Property change handlers
         // -------------------------------------------------------------------------
 
-        //partial void OnRentalFromChanged(DateTime oldValue, DateTime newValue)
-        //{
-        //    if (RentalTo <= newValue)
-        //        RentalTo = newValue.AddDays(1);
+        partial void OnRentalFromChanged(DateTimeOffset oldValue, DateTimeOffset newValue)
+        {
+            if (RentalTo <= newValue)
+                RentalTo = newValue.AddDays(1);
 
-        //    UpdateRentalDays();
-        //    OnPropertyChanged(nameof(IsDateRangeValid));
-        //}
+            UpdateRentalDays();
+            OnPropertyChanged(nameof(IsDateRangeValid));
+        }
 
-        //partial void OnRentalToChanged(DateTime oldValue, DateTime newValue)
-        //{
-        //    UpdateRentalDays();
-        //    OnPropertyChanged(nameof(IsDateRangeValid));
-        //}
+        partial void OnRentalToChanged(DateTimeOffset oldValue, DateTimeOffset newValue)
+        {
+            UpdateRentalDays();
+            OnPropertyChanged(nameof(IsDateRangeValid));
+        }
 
         // -------------------------------------------------------------------------
         // Helpers

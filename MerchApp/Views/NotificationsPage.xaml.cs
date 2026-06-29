@@ -28,13 +28,15 @@ namespace MerchApp.Views
     public sealed partial class NotificationsPage : Page
     {
         private readonly INotificationService _notificationService;
-        private ObservableCollection<AppNotification> _notifications = new();
+        private readonly ObservableCollection<AppNotification> _notifications = new();
 
         public NotificationsPage()
         {
             InitializeComponent();
             _notificationService = App.Current.Services
                 .GetRequiredService<INotificationService>();
+
+            NotificationsList.ItemsSource = _notifications;
 
             LoadNotifications();
 
@@ -48,15 +50,20 @@ namespace MerchApp.Views
             foreach (var n in _notificationService.Notifications)
                 _notifications.Add(n);
 
-            NotificationsList.ItemsSource = _notifications;
+            // Pokaż empty state tylko gdy brak powiadomień
+            EmptyState.Visibility = _notifications.Count == 0
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
             _notificationService.MarkAllAsRead();
         }
 
-        private void ClearAll_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        private void OnNotificationsChanged(object? sender, System.EventArgs e)
+            => DispatcherQueue.TryEnqueue(LoadNotifications);
+
+        private void ClearAll_Click(object sender, RoutedEventArgs e)
         {
             _notificationService.Clear();
         }
-
-        private void OnNotificationsChanged(object? sender, System.EventArgs e)  => DispatcherQueue.TryEnqueue(LoadNotifications);
     }
 }
