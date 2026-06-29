@@ -53,6 +53,7 @@ namespace MerchApp.ViewModels
 
         public bool IsEmpty => _cartService.IsEmpty;
         public bool IsDateRangeValid => _rentalTo > _rentalFrom;
+        public int ItemCount => _cartService.Items.Count;
 
         public DateTimeOffset Today => DateTimeOffset.Now;
 
@@ -150,12 +151,14 @@ namespace MerchApp.ViewModels
 
             UpdateRentalDays();
             OnPropertyChanged(nameof(IsDateRangeValid));
+            OnPropertyChanged(nameof(RentalFromDisplay));
         }
 
         partial void OnRentalToChanged(DateTimeOffset oldValue, DateTimeOffset newValue)
         {
             UpdateRentalDays();
             OnPropertyChanged(nameof(IsDateRangeValid));
+            OnPropertyChanged(nameof(RentalToDisplay));
         }
 
         // -------------------------------------------------------------------------
@@ -166,6 +169,7 @@ namespace MerchApp.ViewModels
         {
             RefreshCartItems();
             OnPropertyChanged(nameof(IsEmpty));
+            OnPropertyChanged(nameof(ItemCount));
         }
 
         private void RefreshCartItems()
@@ -179,5 +183,15 @@ namespace MerchApp.ViewModels
         {
             RentalDays = Math.Max(1, (RentalTo - RentalFrom).Days);
         }
+
+        public string RentalFromDisplay =>
+    RentalFrom == DateTimeOffset.MinValue
+        ? "Select date"
+        : RentalFrom.ToString("d MMM yyyy");
+
+        public string RentalToDisplay =>
+            RentalTo == DateTimeOffset.MinValue
+                ? "Select date"
+                : RentalTo.ToString("d MMM yyyy");
     }
 }
