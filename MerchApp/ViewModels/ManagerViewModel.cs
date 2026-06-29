@@ -11,6 +11,22 @@ using System.Threading.Tasks;
 
 namespace MerchApp.ViewModels
 {
+    /// <summary>
+    /// Wraps RentalRequest with IsSelected for checkbox support.
+    /// </summary>
+    public partial class SelectableRequest : ObservableObject
+    {
+        public RentalRequest Request { get; }
+
+        [ObservableProperty]
+        private bool _isSelected;
+
+        public SelectableRequest(RentalRequest request)
+        {
+            Request = request;
+        }
+    }
+
     public partial class ManagerViewModel : ObservableObject
     {
         private readonly ISharePointService _sharePointService;
@@ -21,16 +37,10 @@ namespace MerchApp.ViewModels
         // -------------------------------------------------------------------------
 
         [ObservableProperty]
-        private ObservableCollection<RentalRequest> _allRequests = new();
+        private ObservableCollection<SelectableRequest> _requests = new();
 
         [ObservableProperty]
-        private ObservableCollection<RentalRequest> _filteredRequests = new();
-
-        [ObservableProperty]
-        private RentalRequest? _selectedRequest;
-
-        //[ObservableProperty]
-        //private DashboardStats _stats = new();
+        private ObservableCollection<SelectableRequest> _filteredRequests = new();
 
         [ObservableProperty]
         private bool _isBusy;
@@ -42,12 +52,25 @@ namespace MerchApp.ViewModels
         private string _errorMessage = string.Empty;
 
         [ObservableProperty]
-        private string _selectedFilter = "All";
+        private string _selectedFilter = "Pending";
 
         [ObservableProperty]
-        private string _managerNote = string.Empty;
+        private string _rejectReason = string.Empty;
+
+        [ObservableProperty]
+        private bool _allSelected;
 
         // -------------------------------------------------------------------------
+
+        public int SelectedCount => FilteredRequests.Count(r => r.IsSelected);
+        public bool HasSelection => SelectedCount > 0;
+
+        // Pokaż przyciski tylko gdy wszystkie zaznaczone są Pending
+        public bool HasPendingSelection =>
+            SelectedCount > 0 &&
+            FilteredRequests
+                .Where(r => r.IsSelected)
+                .All(r => r.Request.Status == RentalStatus.Pending);
 
         public ManagerViewModel(
             ISharePointService sharePointService,
@@ -74,11 +97,19 @@ namespace MerchApp.ViewModels
             {
                 var requests = await _sharePointService.GetAllRentalRequestsAsync();
 
-                AllRequests.Clear();
+                Requests.Clear();
                 foreach (var r in requests)
-                    AllRequests.Add(r);
-
-                //Stats = await _sharePointService.GetDashboardStatsAsync();
+                {
+                    var selectable = new SelectableRequest(r);
+                    selectable.PropertyChanged += (_, _) =>
+                    {
+                        OnPropertyChanged(nameof(SelectedCount));
+                        OnPropertyChanged(nameof(HasSelection));
+                        OnPropertyChanged(nameof(PendingSelectedCount));
+                        OnPropertyChanged(nameof(HasPendingSelection));
+                    };
+                    Requests.Add(selectable);
+                }
 
                 ApplyFilter();
             }
@@ -94,25 +125,38 @@ namespace MerchApp.ViewModels
         }
 
         [RelayCommand]
-        private async Task ApproveRequestAsync(RentalRequest request)
+        private void ToggleSelectAll()
         {
-            if (request is null) return;
+            foreach (var r in FilteredRequests.Where(r => r.Request.Status == RentalStatus.Pending))
+                r.IsSelected = AllSelected;
+
+            OnPropertyChanged(nameof(SelectedCount));
+            OnPropertyChanged(nameof(HasSelection));
+        }
+
+        [RelayCommand]
+        private async Task ApproveSelectedAsync()
+        {
+            var selected = FilteredRequests
+                .Where(r => r.IsSelected && r.Request.Status == RentalStatus.Pending)
+                .ToList();
+
+            if (!selected.Any()) return;
 
             IsBusy = true;
 
             try
             {
-                await _sharePointService.ApproveRequestAsync(request.Id, ManagerNote);
+                foreach (var s in selected)
+                {
+                    await _sharePointService.ApproveRequestAsync(s.Request.Id);
 
-                // Notify user
-                var itemsSummary = string.Join(", ",
-                    request.Items.Select(i => $"{i.ItemName} ×{i.Quantity}"));
+                    var itemsSummary = string.Join(", ",
+                        s.Request.Items.Select(i => $"{i.ItemName} ×{i.Quantity}"));
+                    _notificationService.NotifyRequestApproved(itemsSummary);
+                }
 
-                _notificationService.NotifyRequestApproved(itemsSummary);
-
-                ManagerNote = string.Empty;
-
-                // Reload
+                RejectReason = string.Empty;
                 await LoadAsync();
             }
             catch (Exception ex)
@@ -127,21 +171,25 @@ namespace MerchApp.ViewModels
         }
 
         [RelayCommand]
-        private async Task RejectRequestAsync(RentalRequest request)
+        private async Task RejectSelectedAsync()
         {
-            if (request is null) return;
-            if (string.IsNullOrWhiteSpace(ManagerNote)) return;
+            var selected = FilteredRequests
+                 .Where(r => r.IsSelected && r.Request.Status == RentalStatus.Pending)
+                 .ToList();
+
+            if (!selected.Any()) return;
 
             IsBusy = true;
 
             try
             {
-                await _sharePointService.RejectRequestAsync(request.Id, ManagerNote);
+                foreach (var s in selected)
+                {
+                    await _sharePointService.RejectRequestAsync(s.Request.Id, RejectReason);
+                    _notificationService.NotifyRequestRejected(RejectReason);
+                }
 
-                _notificationService.NotifyRequestRejected(ManagerNote);
-
-                ManagerNote = string.Empty;
-
+                RejectReason = string.Empty;
                 await LoadAsync();
             }
             catch (Exception ex)
@@ -185,13 +233,6 @@ namespace MerchApp.ViewModels
             ApplyFilter();
         }
 
-        [RelayCommand]
-        private void SelectRequest(RentalRequest request)
-        {
-            SelectedRequest = request;
-            ManagerNote = string.Empty;
-        }
-
         // -------------------------------------------------------------------------
         // Helpers
         // -------------------------------------------------------------------------
@@ -200,18 +241,35 @@ namespace MerchApp.ViewModels
         {
             var filtered = SelectedFilter switch
             {
-                "Pending" => AllRequests.Where(r => r.Status == RentalStatus.Pending),
-                "Active" => AllRequests.Where(r => r.Status == RentalStatus.Approved),
-                "Overdue" => AllRequests.Where(r => r.IsOverdue),
-                "Returned" => AllRequests.Where(r => r.Status == RentalStatus.Returned),
-                _ => AllRequests.AsEnumerable()
+                "Pending" => Requests.Where(r => r.Request.Status == RentalStatus.Pending),
+                "Active" => Requests.Where(r => r.Request.Status == RentalStatus.Approved),
+                "Overdue" => Requests.Where(r => r.Request.IsOverdue),
+                "Returned" => Requests.Where(r => r.Request.Status == RentalStatus.Returned),
+                _ => Requests.AsEnumerable()
             };
 
             FilteredRequests.Clear();
             foreach (var r in filtered)
                 FilteredRequests.Add(r);
+
+            AllSelected = false;
+            OnPropertyChanged(nameof(SelectedCount));
+            OnPropertyChanged(nameof(HasSelection));
         }
 
         partial void OnSelectedFilterChanged(string value) => ApplyFilter();
+
+        partial void OnAllSelectedChanged(bool value)
+        {
+            foreach (var r in FilteredRequests)
+                r.IsSelected = value;
+
+            OnPropertyChanged(nameof(SelectedCount));
+            OnPropertyChanged(nameof(HasSelection));
+            OnPropertyChanged(nameof(PendingSelectedCount));
+            OnPropertyChanged(nameof(HasPendingSelection));
+        }
+
+        public int PendingSelectedCount => FilteredRequests.Count(r => r.IsSelected && r.Request.Status == RentalStatus.Pending);
     }
 }

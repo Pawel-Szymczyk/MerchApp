@@ -42,5 +42,16 @@ namespace MerchApp.Models
             Status == RentalStatus.Approved &&
             RentalTo < DateTime.Today &&
             ReturnedDate == null;
+
+        public string Initials
+        {
+            get
+            {
+                var parts = UserDisplayName.Split(' ');
+                return parts.Length >= 2
+                    ? $"{parts[0][0]}{parts[1][0]}".ToUpper()
+                    : UserDisplayName[..1].ToUpper();
+            }
+        }
     }
 }

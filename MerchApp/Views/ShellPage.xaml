@@ -8,6 +8,7 @@
         x:Name="NavView"
         PaneDisplayMode="Left"
         IsBackButtonVisible="Collapsed"
+        IsSettingsVisible="False"
         SelectionChanged="NavView_SelectionChanged">
 
         <!-- Header — user info -->
@@ -86,13 +87,7 @@
 
         <!-- Footer -->
         <NavigationView.FooterMenuItems>
-            <NavigationViewItem
-                Content="Settings"
-                Tag="Settings">
-                <NavigationViewItem.Icon>
-                    <FontIcon Glyph="&#xE713;"/>
-                </NavigationViewItem.Icon>
-            </NavigationViewItem>
+            
             <NavigationViewItem
                 Content="Sign out"
                 Tag="SignOut">      
