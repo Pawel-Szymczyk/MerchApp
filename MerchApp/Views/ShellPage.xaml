@@ -5,81 +5,54 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <NavigationView
-        x:Name="NavView"
-        PaneDisplayMode="Left"
-        IsBackButtonVisible="Collapsed"
-        IsSettingsVisible="False"
-        CompactPaneLength="48"
-        OpenPaneLength="240"
-        SelectionChanged="NavView_SelectionChanged">
+    x:Name="NavView"
+    PaneDisplayMode="Left"
+    IsBackButtonVisible="Collapsed"
+    IsSettingsVisible="False"
+    CompactPaneLength="48"
+    OpenPaneLength="240"
+    SelectionChanged="NavView_SelectionChanged">
 
-        <!-- Header — user info -->
-        <NavigationView.PaneHeader>
-            <StackPanel Spacing="4" Margin="16,16,16,8">
-                <!-- Avatar -->
-                <Border
-                    Width="36" Height="36"
-                    CornerRadius="18"
-                    Background="{ThemeResource AccentFillColorDefaultBrush}">
-                    <TextBlock
-                        x:Name="AvatarInitials"
-                        FontSize="14"
-                        FontWeight="SemiBold"
-                        Foreground="White"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"/>
-                </Border>
-
-                <TextBlock
-                    x:Name="UserNameText"
-                    Style="{StaticResource BodyStrongTextBlockStyle}"
-                    TextTrimming="CharacterEllipsis"/>
-
-                <TextBlock
-                    x:Name="UserRoleText"
-                    Style="{StaticResource CaptionTextBlockStyle}"
-                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-            </StackPanel>
-        </NavigationView.PaneHeader>
+        <!-- Usuń PaneHeader całkowicie -->
 
         <!-- Navigation items -->
         <NavigationView.MenuItems>
             <NavigationViewItem
-                x:Name="CatalogItem"
-                Content="Catalogue"
-                Tag="Catalogue">
+            x:Name="CatalogItem"
+            Content="Catalogue"
+            Tag="Catalogue">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE8A9;"/>
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
 
             <NavigationViewItem
-                x:Name="MyRentalsItem"
-                Content="My Rentals"
-                Tag="MyRentals">
+            x:Name="MyRentalsItem"
+            Content="My Rentals"
+            Tag="MyRentals">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE7BC;"/>
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
 
             <NavigationViewItem
-                x:Name="NotificationsItem"
-                Content="Notifications"
-                Tag="Notifications">
+            x:Name="NotificationsItem"
+            Content="Notifications"
+            Tag="Notifications">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xEA8F;"/>
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
 
             <NavigationViewItemSeparator
-                x:Name="ManagerSeparator"
-                Visibility="Collapsed"/>
+            x:Name="ManagerSeparator"
+            Visibility="Collapsed"/>
 
             <NavigationViewItem
-                x:Name="RequestsItem"
-                Content="Requests"
-                Tag="Requests"
-                Visibility="Collapsed">
+            x:Name="RequestsItem"
+            Content="Requests"
+            Tag="Requests"
+            Visibility="Collapsed">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE8A1;"/>
                 </NavigationViewItem.Icon>
@@ -87,16 +60,52 @@
 
         </NavigationView.MenuItems>
 
-        <!-- Footer -->
+        <!-- Footer — user info + sign out -->
         <NavigationView.FooterMenuItems>
-            
+
+            <NavigationViewItem
+                x:Name="UserInfoItem"
+                IsHitTestVisible="False"
+                SelectsOnInvoked="False">
+                <NavigationViewItem.Content>
+                    <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,0,0,4">
+                        <Border
+                            Width="32" Height="32"
+                            CornerRadius="16"
+                            Background="{ThemeResource AccentFillColorDefaultBrush}"
+                            VerticalAlignment="Center">
+                            <TextBlock
+                                x:Name="AvatarInitials"
+                                FontSize="12"
+                                FontWeight="SemiBold"
+                                Foreground="White"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Spacing="0" VerticalAlignment="Center">
+                            <TextBlock
+                                x:Name="UserNameText"
+                                Style="{StaticResource BodyStrongTextBlockStyle}"
+                                TextTrimming="CharacterEllipsis"/>
+                            <TextBlock
+                                x:Name="UserRoleText"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </NavigationViewItem.Content>
+            </NavigationViewItem>
+
+            <NavigationViewItemSeparator/>
+
             <NavigationViewItem
                 Content="Sign out"
-                Tag="SignOut">      
+                Tag="SignOut">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xF3B1;"/>
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
+
         </NavigationView.FooterMenuItems>
 
         <!-- Content frame -->
