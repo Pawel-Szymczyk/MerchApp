@@ -82,6 +82,12 @@
                     <SolidColorBrush x:Key="LayerFillColorDefaultBrush"              Color="#2b2b2b"/>
                     <SolidColorBrush x:Key="LayerOnMicaBaseAltFillColorDefaultBrush" Color="#2b2b2b"/>
 
+                    <!-- NavigationView selected item -->
+                    <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="#d06d1f"/>
+                    <SolidColorBrush x:Key="NavigationViewItemForegroundSelected" Color="#d06d1f"/>
+                    <SolidColorBrush x:Key="NavigationViewItemBackgroundSelectedPointerOver" Color="#2d2118"/>
+                    <SolidColorBrush x:Key="NavigationViewItemBackgroundSelectedPressed" Color="#d06d1f"/>
+
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
 
@@ -95,6 +101,7 @@
             <converters:StatusToColorConverter            x:Key="StatusToColorConverter"/>
             <converters:BoolToSelectedBrushConverter      x:Key="BoolToSelectedBrushConverter"/>
             <converters:StringToVisibilityConverter       x:Key="StringToVisibilityConverter"/>
+            <converters:StringToColorBrushConverter       x:Key="StringToColorBrushConverter"/>
 
 
             <!-- Primary button — pomarańczowe tło -->
@@ -172,13 +179,14 @@
                                         <VisualState x:Name="Normal"/>
                                         <VisualState x:Name="PointerOver">
                                             <VisualState.Setters>
-                                                <Setter Target="Root.Background" Value="#2d2118"/>
-                                                <Setter Target="Root.BorderBrush" Value="#e3923f"/>
+                                                <Setter Target="Root.Background" Value="#1a3a47"/>
+                                                <Setter Target="Root.BorderBrush" Value="#061319"/>
+                                                <Setter Target="Content.Foreground" Value="#061319"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                         <VisualState x:Name="Pressed">
                                             <VisualState.Setters>
-                                                <Setter Target="Root.Background" Value="#d06d1f"/>
+                                                <Setter Target="Root.Background" Value="#2d2118"/>
                                                 <Setter Target="Root.BorderBrush" Value="#d06d1f"/>
                                             </VisualState.Setters>
                                         </VisualState>
@@ -191,10 +199,12 @@
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                                 <ContentPresenter
+                        x:Name="Content"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Content="{TemplateBinding Content}"
-                        ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        FontWeight="SemiBold"/>
                             </Border>
                         </ControlTemplate>
                     </Setter.Value>

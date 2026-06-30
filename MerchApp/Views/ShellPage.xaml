@@ -13,46 +13,45 @@
     OpenPaneLength="240"
     SelectionChanged="NavView_SelectionChanged">
 
-        <!-- Usuń PaneHeader całkowicie -->
-
+    
         <!-- Navigation items -->
         <NavigationView.MenuItems>
             <NavigationViewItem
-            x:Name="CatalogItem"
-            Content="Catalogue"
-            Tag="Catalogue">
+                x:Name="CatalogItem"
+                Content="Catalogue"
+                Tag="Catalogue">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE8A9;"/>
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
 
             <NavigationViewItem
-            x:Name="MyRentalsItem"
-            Content="My Rentals"
-            Tag="MyRentals">
+                x:Name="MyRentalsItem"
+                Content="My Rentals"
+                Tag="MyRentals">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE7BC;"/>
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
 
             <NavigationViewItem
-            x:Name="NotificationsItem"
-            Content="Notifications"
-            Tag="Notifications">
+                x:Name="NotificationsItem"
+                Content="Notifications"
+                Tag="Notifications">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xEA8F;"/>
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
 
             <NavigationViewItemSeparator
-            x:Name="ManagerSeparator"
-            Visibility="Collapsed"/>
+                x:Name="ManagerSeparator"
+                Visibility="Collapsed"/>
 
             <NavigationViewItem
-            x:Name="RequestsItem"
-            Content="Requests"
-            Tag="Requests"
-            Visibility="Collapsed">
+                x:Name="RequestsItem"
+                Content="Requests"
+                Tag="Requests"
+                Visibility="Collapsed">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE8A1;"/>
                 </NavigationViewItem.Icon>
@@ -60,53 +59,103 @@
 
         </NavigationView.MenuItems>
 
-        <!-- Footer — user info + sign out -->
-        <NavigationView.FooterMenuItems>
+        <!-- Footer — sign out -->
+        <NavigationView.PaneFooter>
+            <Grid>
 
-            <NavigationViewItem
-                x:Name="UserInfoItem"
-                IsHitTestVisible="False"
-                SelectsOnInvoked="False">
-                <NavigationViewItem.Content>
-                    <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,0,0,4">
+                <!-- Expanded view -->
+                <StackPanel
+            x:Name="PaneExpanded"
+            Margin="12,0,12,12"
+            Spacing="8"
+            Visibility="Visible">
+
+                    <Border
+                Height="1"
+                Background="{ThemeResource DividerStrokeColorDefaultBrush}"/>
+
+                    <!-- User info -->
+                    <StackPanel
+                Orientation="Horizontal"
+                Spacing="12"
+                Margin="4,4,0,0">
                         <Border
-                            Width="32" Height="32"
-                            CornerRadius="16"
-                            Background="{ThemeResource AccentFillColorDefaultBrush}"
-                            VerticalAlignment="Center">
+                    x:Name="AvatarBorder"
+                    Width="36" Height="36"
+                    CornerRadius="18"
+                    VerticalAlignment="Center">
                             <TextBlock
-                                x:Name="AvatarInitials"
-                                FontSize="12"
-                                FontWeight="SemiBold"
-                                Foreground="White"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
+                        x:Name="AvatarInitials"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"/>
                         </Border>
-                        <StackPanel Spacing="0" VerticalAlignment="Center">
+                        <StackPanel
+                    x:Name="UserTextPanel"
+                    Spacing="0"
+                    VerticalAlignment="Center">
                             <TextBlock
-                                x:Name="UserNameText"
-                                Style="{StaticResource BodyStrongTextBlockStyle}"
-                                TextTrimming="CharacterEllipsis"/>
+                        x:Name="UserNameText"
+                        Style="{StaticResource BodyStrongTextBlockStyle}"
+                        TextTrimming="CharacterEllipsis"/>
                             <TextBlock
-                                x:Name="UserRoleText"
-                                Style="{StaticResource CaptionTextBlockStyle}"
-                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        x:Name="UserRoleText"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                         </StackPanel>
                     </StackPanel>
-                </NavigationViewItem.Content>
-            </NavigationViewItem>
 
-            <NavigationViewItemSeparator/>
+                    <!-- Sign out full button -->
+                    <Button
+                Style="{StaticResource SecondaryButtonStyle}"
+                HorizontalAlignment="Stretch"
+                Click="SignOut_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xF3B1;" FontSize="14"/>
+                            <TextBlock Text="Sign out"/>
+                        </StackPanel>
+                    </Button>
 
-            <NavigationViewItem
-                Content="Sign out"
-                Tag="SignOut">
-                <NavigationViewItem.Icon>
-                    <FontIcon Glyph="&#xF3B1;"/>
-                </NavigationViewItem.Icon>
-            </NavigationViewItem>
+                </StackPanel>
 
-        </NavigationView.FooterMenuItems>
+                <!-- Collapsed view — only icons -->
+                <StackPanel
+    x:Name="PaneCollapsed"
+    Margin="0,0,0,12"
+    Spacing="8"
+    Width="48"
+    HorizontalAlignment="Center"
+    Visibility="Collapsed">
+
+                    <!-- Small avatar -->
+                    <Border
+        x:Name="AvatarBorderSmall"
+        Width="32" Height="32"
+        CornerRadius="16"
+        HorizontalAlignment="Center">
+                        <TextBlock
+            x:Name="AvatarInitialsSmall"
+            FontSize="12"
+            FontWeight="SemiBold"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"/>
+                    </Border>
+
+                    <!-- Sign out icon only -->
+                    <Button
+        Style="{StaticResource SecondaryButtonStyle}"
+        Width="32" Height="32"
+        Padding="0"
+        HorizontalAlignment="Center"
+        Click="SignOut_Click">
+                        <FontIcon Glyph="&#xF3B1;" FontSize="14"/>
+                    </Button>
+
+                </StackPanel>
+
+            </Grid>
+        </NavigationView.PaneFooter>
 
         <!-- Content frame -->
         <Frame x:Name="ContentFrame"/>
