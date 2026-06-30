@@ -53,5 +53,9 @@ namespace MerchApp.Models
                     : UserDisplayName[..1].ToUpper();
             }
         }
+
+        public string RentalFromFormatted => RentalFrom.ToString("d MMM yyyy");
+        public string RentalToFormatted => RentalTo.ToString("d MMM yyyy");
+        public string ReturnedDateFormatted => ReturnedDate?.ToString("d MMM yyyy") ?? string.Empty;
     }
 }

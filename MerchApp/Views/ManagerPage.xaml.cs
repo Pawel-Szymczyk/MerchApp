@@ -35,10 +35,17 @@ namespace MerchApp.Views
             Loaded += async (_, _) => await ViewModel.LoadCommand.ExecuteAsync(null);
         }
 
+        //private void RequestRow_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
+        //{
+        //    if (sender is not Grid grid) return;
+        //    if (grid.DataContext is not SelectableRequest selectable) return;
+
+        //    ViewModel.ToggleExpandCommand.Execute(selectable);
+        //}
         private void RequestRow_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
-            if (sender is not Grid grid) return;
-            if (grid.DataContext is not SelectableRequest selectable) return;
+            if (sender is not Border border) return;
+            if (border.DataContext is not SelectableRequest selectable) return;
 
             ViewModel.ToggleExpandCommand.Execute(selectable);
         }

@@ -33,7 +33,7 @@ namespace MerchApp
 
             // window size
             var appWindow = AppWindow;
-            appWindow.Resize(new SizeInt32(900, 850));
+            appWindow.Resize(new SizeInt32(960, 850));
 
             // Ustaw ciemny title bar
             var titleBar = AppWindow.TitleBar;

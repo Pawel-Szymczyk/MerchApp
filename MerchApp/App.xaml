@@ -53,6 +53,24 @@
                     <SolidColorBrush x:Key="AppInputBorderBrush"    Color="#2effffff"/>
 
                     <!-- ═══════════════════════════════════════════
+                          RADIO
+                     ═══════════════════════════════════════════ -->
+                    <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedFill"        Color="#d06d1f"/>
+                    <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedStroke"      Color="#d06d1f"/>
+                    <!--<SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedPointerOverFill"   Color="#e3923f"/>
+                    <SolidColorBrush x:Key="RadioButtonOuterEllipseCheckedPointerOverStroke" Color="#e3923f"/>
+                    <SolidColorBrush x:Key="RadioButtonInnerEllipseCheckedFill"        Color="#d06d1f"/>
+                    <SolidColorBrush x:Key="RadioButtonInnerEllipseCheckedPointerOverFill"   Color="#e3923f"/>
+                    <SolidColorBrush x:Key="RadioButtonOuterEllipsePointerOverFill"   Color="#061319"/>
+                    <SolidColorBrush x:Key="RadioButtonOuterEllipsePointerOverStroke" Color="#d06d1f"/>
+                    <SolidColorBrush x:Key="RadioButtonInnerEllipsePointerOverFill"   Color="#061319"/>
+                    <SolidColorBrush x:Key="RadioButtonForegroundPointerOver"          Color="#d06d1f"/>
+                    <SolidColorBrush x:Key="RadioButtonOuterEllipseFill"               Color="Transparent"/>
+                    <SolidColorBrush x:Key="RadioButtonOuterEllipseStroke"             Color="#9a9a9a"/>
+                    <SolidColorBrush x:Key="RadioButtonCheckGlyphForeground"           Color="#d06d1f"/>
+                    <SolidColorBrush x:Key="RadioButtonCheckGlyphForegroundPointerOver" Color="#d06d1f"/>-->
+
+                    <!-- ═══════════════════════════════════════════
                          OVERRIDE WINUI DARK THEME RESOURCES
                     ═══════════════════════════════════════════ -->
                     <!--<SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush"     Color="#061319"/>-->
@@ -88,6 +106,24 @@
                     <SolidColorBrush x:Key="NavigationViewItemBackgroundSelectedPointerOver" Color="#2d2118"/>
                     <SolidColorBrush x:Key="NavigationViewItemBackgroundSelectedPressed" Color="#d06d1f"/>
 
+                    <!-- Checkbox accent colors -->
+                    <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillChecked"             Color="#061319"/>
+                    <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedPointerOver"  Color="#061319"/>
+                    <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedPressed"      Color="#2d2118"/>
+                    <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeChecked"           Color="#061319"/>
+                    <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedPointerOver" Color="#061319"/>
+                    <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundChecked"            Color="#ffffff"/>
+                    <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedPointerOver" Color="#ffffff"/>
+
+
+                    <!-- TextBox focus colors -->
+                    <SolidColorBrush x:Key="TextControlBorderBrushFocused"             Color="#d06d1f"/>
+                    <SolidColorBrush x:Key="TextControlBorderBrushPointerOver"         Color="#e3923f"/>
+                    <SolidColorBrush x:Key="TextControlFocusVisualPrimaryBrush"        Color="#d06d1f"/>
+                    <SolidColorBrush x:Key="TextControlFocusVisualSecondaryBrush"      Color="#d06d1f"/>
+                    <SolidColorBrush x:Key="TextControlBackgroundFocused"              Color="#2b2b2b"/>
+                    <SolidColorBrush x:Key="TextControlBackgroundPointerOver"          Color="#353535"/>
+
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
 
@@ -102,6 +138,7 @@
             <converters:BoolToSelectedBrushConverter      x:Key="BoolToSelectedBrushConverter"/>
             <converters:StringToVisibilityConverter       x:Key="StringToVisibilityConverter"/>
             <converters:StringToColorBrushConverter       x:Key="StringToColorBrushConverter"/>
+            <converters:BoolToAccentBrushConverter        x:Key="BoolToAccentBrushConverter"/>
 
 
             <!-- Primary button — pomarańczowe tło -->
