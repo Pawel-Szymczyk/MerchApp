@@ -20,7 +20,7 @@ namespace MerchApp.ViewModels
         private bool _isBusy;
 
         [ObservableProperty]
-        private string _statusMessage = "Sign in with your Microsoft 365 account to continue.";
+        private string _statusMessage = "Sign in with your Microsoft 365 account to request merch items and track your rentals.";
 
         public LoginViewModel(IAuthService authService, ISessionContext session)
         {

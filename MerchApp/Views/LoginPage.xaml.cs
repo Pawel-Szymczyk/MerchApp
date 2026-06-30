@@ -1,3 +1,4 @@
+using MerchApp.Services;
 using MerchApp.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
@@ -31,6 +32,11 @@ namespace MerchApp.Views
         {
             InitializeComponent();
             ViewModel = App.Current.Services.GetRequiredService<LoginViewModel>();
+
+            // Pokaż URL SharePoint
+            var settings = App.Current.Services.GetRequiredService<ISettingsService>();
+            var uri = new Uri(settings.Settings.SharePoint.SiteUrl);
+            SharePointUrlText.Text = $"{uri.Host} · {uri.AbsolutePath.Trim('/')}";
         }
     }
 }

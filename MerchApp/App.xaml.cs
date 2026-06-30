@@ -42,6 +42,9 @@ namespace MerchApp
         {
             Services = ConfigureServices();
             InitializeComponent();
+
+            // set dark mode
+            RequestedTheme = ApplicationTheme.Dark;
         }
 
         /// <summary>

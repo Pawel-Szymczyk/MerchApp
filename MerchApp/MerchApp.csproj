@@ -14,6 +14,23 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Content Remove="Assets\BadgeLogo.scale-100.png" />
+    <Content Remove="Assets\BadgeLogo.scale-125.png" />
+    <Content Remove="Assets\BadgeLogo.scale-150.png" />
+    <Content Remove="Assets\BadgeLogo.scale-200.png" />
+    <Content Remove="Assets\BadgeLogo.scale-400.png" />
+    <Content Remove="Assets\icon_256_dark.png" />
+    <Content Remove="Assets\icon_48_dark.png" />
+    <Content Remove="Assets\logo.jpg" />
+    <Content Remove="Assets\LogoDark\icon_150_transparent.png" />
+    <Content Remove="Assets\LogoDark\icon_256_dark.png" />
+    <Content Remove="Assets\LogoDark\icon_48_dark.png" />
+    <Content Remove="Assets\logo_login_dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Assets\LogoDark\icon_256_transparent.png" />
+    <None Remove="Assets\LogoDark\icon_44_transparent.png" />
+    <None Remove="Assets\LogoDark\logo_login_dark.png" />
     <None Remove="ItemsPage.xaml" />
     <None Remove="Views\CartPage.xaml" />
     <None Remove="Views\ItemsPage.xaml" />
@@ -30,7 +47,6 @@
     <Content Include="Assets\Square150x150Logo.scale-200.png" />
     <Content Include="Assets\Square44x44Logo.scale-200.png" />
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
 
@@ -53,11 +69,23 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.9" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.9" />
     <PackageReference Include="Microsoft.Identity.Client" Version="4.85.2" />
+    <PackageReference Include="Microsoft.Identity.Client.Broker" Version="4.85.2" />
     <PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" Version="4.85.2" />
     <PackageReference Include="Microsoft.Sharepoint.Client.Runtime" Version="15.0.4711.1000" />
     <PackageReference Include="Microsoft.SharePointOnline.CSOM" Version="16.1.27313.12000" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2270" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="Assets\LogoDark\icon_256_transparent.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\LogoDark\icon_44_transparent.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\LogoDark\logo_login_dark.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Update="Config\appsettings.json">
@@ -104,5 +132,6 @@
     <PublishReadyToRun Condition="'$(Configuration)' != 'Debug'">True</PublishReadyToRun>
     <PublishTrimmed Condition="'$(Configuration)' == 'Debug'">False</PublishTrimmed>
     <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
+    <ApplicationIcon>Assets\LogoDark\merch_app_dark.ico</ApplicationIcon>
   </PropertyGroup>
 </Project>
