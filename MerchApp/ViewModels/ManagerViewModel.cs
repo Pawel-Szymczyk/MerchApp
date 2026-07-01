@@ -89,9 +89,12 @@ namespace MerchApp.ViewModels
         // -------------------------------------------------------------------------
 
         [RelayCommand]
-        private async Task LoadAsync()
+        private async Task LoadAsync() => await LoadInternalAsync();
+
+        
+        private async Task LoadInternalAsync(bool force = false)
         {
-            if (IsBusy) return;
+            if (IsBusy && !force) return;
 
             IsBusy = true;
             HasError = false;
@@ -162,7 +165,9 @@ namespace MerchApp.ViewModels
                 }
 
                 RejectReason = string.Empty;
-                await LoadAsync();
+
+                ClearSelection();
+                await LoadInternalAsync(force: true);
             }
             catch (Exception ex)
             {
@@ -195,7 +200,9 @@ namespace MerchApp.ViewModels
                 }
 
                 RejectReason = string.Empty;
-                await LoadAsync();
+
+                ClearSelection();
+                await LoadInternalAsync(force: true);
             }
             catch (Exception ex)
             {
@@ -218,6 +225,9 @@ namespace MerchApp.ViewModels
             try
             {
                 await _sharePointService.MarkAsReturnedAsync(request.Id);
+
+                ClearSelection();
+
                 await LoadAsync();
             }
             catch (Exception ex)
@@ -271,7 +281,9 @@ namespace MerchApp.ViewModels
                 foreach (var s in selected)
                     await _sharePointService.MarkAsReturnedAsync(s.Request.Id);
 
-                await LoadAsync();
+                ClearSelection();
+
+                await LoadInternalAsync(force: true);
             }
             catch (Exception ex)
             {
@@ -306,6 +318,9 @@ namespace MerchApp.ViewModels
             AllSelected = false;
             OnPropertyChanged(nameof(SelectedCount));
             OnPropertyChanged(nameof(HasSelection));
+            OnPropertyChanged(nameof(PendingSelectedCount));
+            OnPropertyChanged(nameof(HasPendingSelection));
+            OnPropertyChanged(nameof(HasApprovedSelection));
         }
 
         partial void OnSelectedFilterChanged(string value) => ApplyFilter();
@@ -327,7 +342,18 @@ namespace MerchApp.ViewModels
         public bool HasApprovedSelection => SelectedCount > 0 && FilteredRequests
             .Where(r => r.IsSelected).All(r => r.Request.Status == RentalStatus.Approved || r.Request.IsOverdue);
 
+        private void ClearSelection()
+        {
+            foreach (var r in FilteredRequests)
+                r.IsSelected = false;
 
+            AllSelected = false;
+            OnPropertyChanged(nameof(SelectedCount));
+            OnPropertyChanged(nameof(HasSelection));
+            OnPropertyChanged(nameof(PendingSelectedCount));
+            OnPropertyChanged(nameof(HasPendingSelection));
+            OnPropertyChanged(nameof(HasApprovedSelection));
+        }
 
     }
 }
