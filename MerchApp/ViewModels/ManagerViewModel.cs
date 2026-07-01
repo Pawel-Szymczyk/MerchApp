@@ -111,6 +111,7 @@ namespace MerchApp.ViewModels
                         OnPropertyChanged(nameof(HasSelection));
                         OnPropertyChanged(nameof(PendingSelectedCount));
                         OnPropertyChanged(nameof(HasPendingSelection));
+                        OnPropertyChanged(nameof(HasApprovedSelection));
                     };
                     Requests.Add(selectable);
                 }
@@ -253,6 +254,35 @@ namespace MerchApp.ViewModels
                 request.IsExpanded = true;
         }
 
+        [RelayCommand]
+        private async Task MarkAsReturnedSelectedAsync()
+        {
+            var selected = FilteredRequests
+                .Where(r => r.IsSelected &&
+                       (r.Request.Status == RentalStatus.Approved || r.Request.IsOverdue))
+                .ToList();
+
+            if (!selected.Any()) return;
+
+            IsBusy = true;
+
+            try
+            {
+                foreach (var s in selected)
+                    await _sharePointService.MarkAsReturnedAsync(s.Request.Id);
+
+                await LoadAsync();
+            }
+            catch (Exception ex)
+            {
+                HasError = true;
+                ErrorMessage = ex.Message;
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
 
         // -------------------------------------------------------------------------
         // Helpers
@@ -289,8 +319,15 @@ namespace MerchApp.ViewModels
             OnPropertyChanged(nameof(HasSelection));
             OnPropertyChanged(nameof(PendingSelectedCount));
             OnPropertyChanged(nameof(HasPendingSelection));
+            OnPropertyChanged(nameof(HasApprovedSelection));
         }
 
         public int PendingSelectedCount => FilteredRequests.Count(r => r.IsSelected && r.Request.Status == RentalStatus.Pending);
+
+        public bool HasApprovedSelection => SelectedCount > 0 && FilteredRequests
+            .Where(r => r.IsSelected).All(r => r.Request.Status == RentalStatus.Approved || r.Request.IsOverdue);
+
+
+
     }
 }
