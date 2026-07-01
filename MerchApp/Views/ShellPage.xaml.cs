@@ -72,6 +72,10 @@ namespace MerchApp.Views
             AvatarInitials.Foreground = fg;
             AvatarBorderSmall.Background = bg;
             AvatarInitialsSmall.Foreground = fg;
+
+            // Display app version
+            var version = Windows.ApplicationModel.Package.Current.Id.Version;
+            AppVersionText.Text = $"Version: {version.Major}.{version.Minor}.{version.Build}";
         }
 
         private void SetupNavigationForRole()
