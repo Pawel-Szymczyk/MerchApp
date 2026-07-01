@@ -4,8 +4,7 @@
 
 ---
 
-## 🇬🇧 English
-
+## 🇬🇧 
 ### What is Merch App?
 
 Merch App is a WinUI 3 desktop application that allows organisations to manage the rental of promotional materials (merch) internally. It was built for **Stop Domestic Abuse**, a UK-based charity, as part of their internal tooling to track who has borrowed what, when items are due back, and to streamline the approval process.
@@ -63,7 +62,7 @@ The application uses **Microsoft 365 / SharePoint Online** as its backend — no
 │    (MerchItems, RentalRequests,         │
 │         RentalItems lists)              │
 │                  ↓                      │
-│   Azure AD ←→ MSAL Authentication      │
+│   Azure AD ←→ MSAL Authentication       │
 │                  ↓                      │
 │    Power Automate → Email (Outlook)     │
 └─────────────────────────────────────────┘
@@ -139,8 +138,7 @@ Built by **Paweł Szymczyk** ([Pawel Szymczyk IT Services](https://github.com/Pa
 ---
 ---
 
-## 🇵🇱 Polski
-
+## 🇵🇱 
 ### Czym jest Merch App?
 
 Merch App to aplikacja desktopowa WinUI 3, która umożliwia organizacjom zarządzanie wypożyczaniem materiałów promocyjnych (merch) wewnętrznie. Została zbudowana dla **Stop Domestic Abuse** — brytyjskiej organizacji charytatywnej — jako narzędzie do śledzenia kto, co i kiedy pożyczył, kiedy przedmioty mają zostać zwrócone, oraz do usprawnienia procesu zatwierdzania.
