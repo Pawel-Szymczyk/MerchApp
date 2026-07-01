@@ -1,11 +1,10 @@
 ﻿using MerchApp.Models;
+using MerchApp.Services.Interfaces;
 using Microsoft.Identity.Client;
 using Microsoft.Identity.Client.Extensions.Msal;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MerchApp.Services
@@ -43,18 +42,16 @@ namespace MerchApp.Services
             EnableTokenCache();
         }
 
-      
-
         public async Task<string> GetAccessTokenAsync()
         {
-            if( _currentUser == null )
+            if (_currentUser == null)
                 throw new InvalidOperationException("User is not logged in.");
 
             var accounts = await _msalClient.GetAccountsAsync();
             var account = accounts.FirstOrDefault(a =>
                 a.Username.Equals(_currentUser.Email, StringComparison.OrdinalIgnoreCase));
 
-            if(account  == null )
+            if (account == null)
                 throw new InvalidOperationException("Cached account not found. Please log in again.");
 
             var result = await _msalClient
@@ -99,7 +96,6 @@ namespace MerchApp.Services
             return _currentUser;
         }
 
-
         public async Task LogoutAsync()
         {
             var accounts = await _msalClient.GetAccountsAsync();
@@ -117,7 +113,7 @@ namespace MerchApp.Services
             var managerEmail = _settingsService.Settings.Roles.ManagerEmail;
 
             var role = email.Equals(managerEmail, StringComparison.OrdinalIgnoreCase)
-                ? UserRole.Manager 
+                ? UserRole.Manager
                 : UserRole.User;
 
             var displayName = result.ClaimsPrincipal?.FindFirst("name")?.Value ?? email;

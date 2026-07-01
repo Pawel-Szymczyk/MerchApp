@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MerchApp.Models
+﻿namespace MerchApp.Models
 {
     /// <summary>
     /// Represents one line in a rental request — which item and how many.

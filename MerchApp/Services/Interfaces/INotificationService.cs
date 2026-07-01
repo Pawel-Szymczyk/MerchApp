@@ -1,11 +1,8 @@
-﻿
-using MerchApp.Models;
+﻿using MerchApp.Models;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Windows.UI.Notifications;
 
-namespace MerchApp.Services
+namespace MerchApp.Services.Interfaces
 {
     /// <summary>
     /// Handles in-app notifications and Windows toast notifications.

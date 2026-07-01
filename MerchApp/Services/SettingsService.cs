@@ -1,4 +1,5 @@
 ﻿using MerchApp.Models;
+using MerchApp.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;

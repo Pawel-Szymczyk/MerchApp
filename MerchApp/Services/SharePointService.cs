@@ -1,9 +1,9 @@
 ﻿using MerchApp.Models;
+using MerchApp.Services.Interfaces;
 using Microsoft.SharePoint.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MerchApp.Services
@@ -42,69 +42,6 @@ namespace MerchApp.Services
         // =========================================================================
         // ITEMS
         // =========================================================================
-
-        //public async Task<List<Item>> GetItemsAsync()
-        //{
-        //    using var ctx = await GetContextAsync();
-
-        //    var list = ctx.Web.Lists.GetByTitle(ItemsListName);
-
-        //    var query = new CamlQuery
-        //    {
-        //        ViewXml = @"
-        //        <View>
-        //          <Query>
-        //            <OrderBy>
-        //              <FieldRef Name='Title' Ascending='TRUE'/>
-        //            </OrderBy>
-        //          </Query>
-        //          <ViewFields>
-        //            <FieldRef Name='ID'/>
-        //            <FieldRef Name='Title'/>
-        //            <FieldRef Name='TotalCount'/>
-        //            <FieldRef Name='Description'/>
-        //          </ViewFields>
-        //        </View>"
-        //    };
-
-        //    var spItems = list.GetItems(query);
-        //    ctx.Load(spItems);
-        //    await ctx.ExecuteQueryAsync();
-
-        //    var items = new List<Item>();
-        //    foreach (var i in spItems)
-        //    {
-        //        items.Add(new Item
-        //        {
-        //            Id = i.Id,
-        //            Title = i["Title"]?.ToString() ?? string.Empty,
-        //            Description = i.FieldValues.ContainsKey("Description") && i["Description"] != null
-        //                               ? i["Description"].ToString()
-        //                               : string.Empty,
-        //            TotalCount = i.FieldValues.ContainsKey("TotalCount") && i["TotalCount"] != null
-        //                               ? Convert.ToInt32(i["TotalCount"])
-        //                               : 1,
-        //            AvailableCount = i.FieldValues.ContainsKey("TotalCount") && i["TotalCount"] != null
-        //                               ? Convert.ToInt32(i["TotalCount"])
-        //                               : 1
-        //        });
-        //    }
-
-        //    // Calculate AvailableCount by subtracting active rentals
-        //    var activeRentals = await GetActiveRentalItemsAsync(ctx);
-
-        //    foreach (var item in items)
-        //    {
-        //        var rented = activeRentals
-        //            .Where(r => r.ItemId == item.Id)
-        //            .Sum(r => r.Quantity);
-
-        //        item.AvailableCount = Math.Max(0, item.TotalCount - rented);
-        //    }
-
-        //    return items;
-        //}
-
         public async Task<List<Item>> GetItemsAsync()
         {
             using var ctx = await GetContextAsync();
@@ -147,19 +84,6 @@ namespace MerchApp.Services
 
             return items;
         }
-
-        //public async Task UpdateItemCountAsync(int itemId, int totalCount)
-        //{
-        //    using var ctx = await GetContextAsync();
-
-        //    var list = ctx.Web.Lists.GetByTitle(ItemsListName);
-        //    var item = list.GetItemById(itemId);
-
-        //    item["TotalCount"] = totalCount;
-        //    item.Update();
-
-        //    await ctx.ExecuteQueryAsync();
-        //}
 
         public async Task<int> AddItemAsync(string title, int totalCount, string description = "")
         {
@@ -232,7 +156,7 @@ namespace MerchApp.Services
                 lineItem["RequestId"] = requestId;
                 lineItem["ItemId"] = cartItem.Item.Id;
                 lineItem["ItemName"] = cartItem.Item.Title;
-                lineItem["Quantity"] = cartItem.Quantity;
+                //lineItem["Quantity"] = cartItem.Quantity;
                 lineItem.Update();
             }
 
@@ -275,25 +199,6 @@ namespace MerchApp.Services
             await ctx.ExecuteQueryAsync();
         }
 
-        // =========================================================================
-        // DASHBOARD STATS
-        // =========================================================================
-
-        //public async Task<DashboardStats> GetDashboardStatsAsync()
-        //{
-        //    var allRequests = await GetAllRentalRequestsAsync();
-
-        //    return new DashboardStats
-        //    {
-        //        PendingCount = allRequests.Count(r => r.Status == RentalStatus.Pending),
-        //        ActiveCount = allRequests.Count(r => r.Status == RentalStatus.Approved),
-        //        OverdueCount = allRequests.Count(r => r.IsOverdue),
-        //        TotalIssued = allRequests
-        //            .Where(r => r.Status == RentalStatus.Approved || r.Status == RentalStatus.Returned)
-        //            .SelectMany(r => r.Items)
-        //            .Sum(i => i.Quantity)
-        //    };
-        //}
 
         // =========================================================================
         // PRIVATE HELPERS
@@ -465,42 +370,6 @@ namespace MerchApp.Services
             }
             return result;
         }
-
-        //private async Task<List<RentalItem>> GetActiveRentalItemsAsync(ClientContext ctx)
-        //{
-        //    var requestList = ctx.Web.Lists.GetByTitle(RequestsListName);
-
-        //    var requestQuery = new CamlQuery
-        //    {
-        //        ViewXml = @"
-        //        <View>
-        //          <Query>
-        //            <Where>
-        //              <In>
-        //                <FieldRef Name='Status'/>
-        //                <Values>
-        //                  <Value Type='Choice'>Pending</Value>
-        //                  <Value Type='Choice'>Approved</Value>
-        //                </Values>
-        //              </In>
-        //            </Where>
-        //          </Query>
-        //          <ViewFields>
-        //            <FieldRef Name='ID'/>
-        //          </ViewFields>
-        //        </View>"
-        //    };
-
-        //    var activeRequests = requestList.GetItems(requestQuery);
-        //    ctx.Load(activeRequests);
-        //    await ctx.ExecuteQueryAsync();
-
-        //    if (!activeRequests.Any())
-        //        return new List<RentalItem>();
-
-        //    var activeIds = activeRequests.Select(r => r.Id).ToList();
-        //    return await GetRentalItemsForRequestsAsync(ctx, activeIds);
-        //}
 
         private async Task UpdateRequestStatusAsync(int requestId, string status, string note)
         {

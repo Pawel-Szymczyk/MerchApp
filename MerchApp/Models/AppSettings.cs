@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MerchApp.Models
+﻿namespace MerchApp.Models
 {
     /// <summary>
     /// Strongly-typed representation of appsettings.json.

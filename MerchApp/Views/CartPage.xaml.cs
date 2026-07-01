@@ -5,9 +5,6 @@ using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Linq;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace MerchApp.Views
 {
     /// <summary>
@@ -15,19 +12,10 @@ namespace MerchApp.Views
     /// </summary>
     public sealed partial class CartPage : Page
     {
+        private bool _selectingFrom = true;
+        private bool _updatingCalendar = false;
+
         public CartViewModel ViewModel { get; }
-
-        //public CartPage()
-        //{
-        //    InitializeComponent();
-        //    ViewModel = App.Current.Services.GetRequiredService<CartViewModel>();
-
-        //    ViewModel.RequestSubmitted += (_, _) =>
-        //        DispatcherQueue.TryEnqueue(() => Frame.Navigate(typeof(ItemsPage)));
-
-        //    ViewModel.ClearCartCommand.CanExecuteChanged += (_, _) =>
-        //        DispatcherQueue.TryEnqueue(() => NavigateToCatalogue());
-        //}
 
         public CartPage()
         {
@@ -74,8 +62,6 @@ namespace MerchApp.Views
             Frame.Navigate(typeof(ItemsPage));
         }
 
-        private bool _selectingFrom = true;
-        private bool _updatingCalendar = false;
         private void FromDate_Click(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             _selectingFrom = true;
@@ -95,7 +81,6 @@ namespace MerchApp.Views
             if (ViewModel.RentalTo != DateTimeOffset.MinValue)
                 MainCalendar.SetDisplayDate(ViewModel.RentalTo.DateTime);
         }
-
 
         private void UpdateDateBorders(bool fromActive)
         {

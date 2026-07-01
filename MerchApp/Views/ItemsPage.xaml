@@ -101,7 +101,7 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <!-- Bottom action bar — pojawia sie gdy cos zaznaczone -->
+        <!-- Bottom action bar -->
         <Border
             Grid.Row="3"
             Padding="16,12"

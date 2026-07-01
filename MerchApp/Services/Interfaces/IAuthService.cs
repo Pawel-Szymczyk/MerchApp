@@ -1,7 +1,7 @@
 ﻿using MerchApp.Models;
 using System.Threading.Tasks;
 
-namespace MerchApp.Services
+namespace MerchApp.Services.Interfaces
 {
     public interface IAuthService
     {

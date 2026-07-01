@@ -4,26 +4,10 @@ using System.Text;
 
 namespace MerchApp.Models
 {
-    ///// <summary>
-    ///// Transient — lives only in memory while the user is building their request.
-    ///// Not stored in SharePoint until the request is submitted.
-    ///// </summary>
-    //public class CartItem
-    //{
-    //    public Item Item { get; set; } = null!;
-    //    public int Quantity { get; set; } = 1;
-
-    //    public string DisplayLine => $"{Item.Title}  ×{Quantity}";
-    //}
-
-    /// <summary>
-    /// Transient — lives only in memory.
-    /// Quantity always 1 — each item is a single unit.
-    /// </summary>
     public class CartItem
     {
         public Item Item { get; set; } = null!;
-        public int Quantity => 1;
+        //public int Quantity => 1;
 
         public string DisplayLine => Item.Title;
     }
