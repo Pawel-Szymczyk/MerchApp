@@ -22,6 +22,8 @@ namespace MerchApp.Views
             var settings = App.Current.Services.GetRequiredService<ISettingsService>();
             var uri = new Uri(settings.Settings.SharePoint.SiteUrl);
             SharePointUrlText.Text = $"{uri.Host} · {uri.AbsolutePath.Trim('/')}";
+
+            Loaded += async (_, _) => await ViewModel.CheckConnectionAsync();
         }
     }
 }

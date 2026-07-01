@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MerchApp.Services;
 using MerchApp.Services.Interfaces;
 using System;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace MerchApp.ViewModels
     {
         private readonly IAuthService _authService;
         private readonly ISessionContext _session;
+        private readonly ISettingsService _settingsService;
 
         public event EventHandler? LoginSucceeded;
         public event EventHandler<string>? LoginFailed;
@@ -20,10 +22,18 @@ namespace MerchApp.ViewModels
         [ObservableProperty]
         private string _statusMessage = "Sign in with your Microsoft 365 account to request merch items and track your rentals.";
 
-        public LoginViewModel(IAuthService authService, ISessionContext session)
+        [ObservableProperty]
+        private bool _isConnected;
+
+        [ObservableProperty]
+        private string _connectionUrl = string.Empty;
+
+        public LoginViewModel(
+            IAuthService authService, ISessionContext session, ISettingsService settingsService) 
         {
             _authService = authService;
             _session = session;
+            _settingsService = settingsService;
         }
 
         [RelayCommand]
@@ -55,6 +65,30 @@ namespace MerchApp.ViewModels
             finally
             {
                 IsBusy = false;
+            }
+        }
+
+        public async Task CheckConnectionAsync()
+        {
+            try
+            {
+                var siteUrl = _settingsService.Settings.SharePoint.SiteUrl;
+
+                // Simple HTTP check — no auth required
+                using var client = new System.Net.Http.HttpClient();
+                client.Timeout = TimeSpan.FromSeconds(5);
+
+                var response = await client.GetAsync(siteUrl);
+
+                IsConnected = response.IsSuccessStatusCode ||
+                                response.StatusCode == System.Net.HttpStatusCode.Unauthorized ||
+                                response.StatusCode == System.Net.HttpStatusCode.Forbidden;
+                ConnectionUrl = siteUrl;
+            }
+            catch
+            {
+                IsConnected = false;
+                ConnectionUrl = string.Empty;
             }
         }
     }

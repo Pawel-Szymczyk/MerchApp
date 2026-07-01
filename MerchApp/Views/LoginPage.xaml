@@ -80,16 +80,17 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
+                <!-- Status dot — green or red -->
                 <Ellipse
                     Grid.Column="0"
                     Width="8" Height="8"
-                    Fill="#5cc35c"
                     VerticalAlignment="Center"
-                    Margin="0,0,10,0"/>
+                    Margin="0,0,10,0"
+                    Fill="{x:Bind ViewModel.IsConnected, Mode=OneWay, Converter={StaticResource BoolToStatusBrushConverter}}"/>
 
                 <StackPanel Grid.Column="1" Spacing="1" VerticalAlignment="Center">
                     <TextBlock
-                        Text="Connected to SharePoint"
+                        Text="{x:Bind ViewModel.IsConnected, Mode=OneWay, Converter={StaticResource BoolToConnectionTextConverter}}"
                         FontSize="13"
                         FontWeight="SemiBold"
                         Foreground="#f1f1f1"/>

@@ -139,6 +139,8 @@
             <converters:StringToVisibilityConverter       x:Key="StringToVisibilityConverter"/>
             <converters:StringToColorBrushConverter       x:Key="StringToColorBrushConverter"/>
             <converters:BoolToAccentBrushConverter        x:Key="BoolToAccentBrushConverter"/>
+            <converters:BoolToConnectionTextConverter     x:Key="BoolToConnectionTextConverter"/>
+            <converters:BoolToStatusBrushConverter        x:Key="BoolToStatusBrushConverter"/>
 
 
             <!-- Primary button — pomarańczowe tło -->
