@@ -248,6 +248,36 @@
                 </Setter>
             </Style>
 
+            <Style x:Key="OrangeHyperlinkButtonStyle" TargetType="HyperlinkButton">
+                <Setter Property="Foreground" Value="#d06d1f"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="HyperlinkButton">
+                            <TextBlock
+                    x:Name="Text"
+                    Text="{TemplateBinding Content}"
+                    Foreground="{TemplateBinding Foreground}">
+                    <VisualStateManager.VisualStateGroups>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal"/>
+                            <VisualState x:Name="PointerOver">
+                                <VisualState.Setters>
+                                    <Setter Target="Text.Foreground" Value="#d06d1f"/>
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Pressed">
+                                <VisualState.Setters>
+                                    <Setter Target="Text.Foreground" Value="#061319"/>
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateManager.VisualStateGroups>
+                            </TextBlock>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

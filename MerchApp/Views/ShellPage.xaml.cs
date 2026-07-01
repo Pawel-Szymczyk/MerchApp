@@ -40,10 +40,6 @@ namespace MerchApp.Views
             SetupUserInfo();
             SetupNavigationForRole();
 
-            //NavView.PaneOpened += (_, _) => SetPaneFooterVisibility(true);
-            //NavView.PaneClosed += (_, _) => SetPaneFooterVisibility(false);
-            //NavView.DisplayModeChanged += (_, _) => SetPaneFooterVisibility(NavView.IsPaneOpen);
-
             NavView.PaneOpened += (_, _) =>
             {
                 _isPaneOpen = true;
@@ -62,40 +58,6 @@ namespace MerchApp.Views
             PaneCollapsed.Visibility = _isPaneOpen ? Visibility.Collapsed : Visibility.Visible;
         }
 
-        //private void SetupUserInfo()
-        //{
-        //    var user = _session.CurrentUser;
-        //    if (user is null) return;
-
-        //    UserNameText.Text = user.DisplayName;
-        //    UserRoleText.Text = user.IsManager ? "Manager" : "User";
-
-        //    var parts = user.DisplayName.Split(' ');
-        //    AvatarInitials.Text = parts.Length >= 2
-        //        ? $"{parts[0][0]}{parts[1][0]}".ToUpper()
-        //        : user.DisplayName[..1].ToUpper();
-        //}
-
-        //private void SetupUserInfo()
-        //{
-        //    var user = _session.CurrentUser;
-        //    if (user is null) return;
-
-        //    UserNameText.Text = user.DisplayName;
-        //    UserRoleText.Text = user.IsManager ? "Manager" : "User";
-
-        //    var parts = user.DisplayName.Split(' ');
-        //    AvatarInitials.Text = parts.Length >= 2
-        //        ? $"{parts[0][0]}{parts[1][0]}".ToUpper()
-        //        : user.DisplayName[..1].ToUpper();
-
-        //    // Set avatar colors from code-behind
-        //    var converter = new MerchApp.Converters.StringToColorBrushConverter();
-        //    AvatarBorder.Background = (Microsoft.UI.Xaml.Media.Brush)
-        //        converter.Convert(user.AvatarColorFaded, typeof(Microsoft.UI.Xaml.Media.Brush), null, string.Empty);
-        //    AvatarInitials.Foreground = (Microsoft.UI.Xaml.Media.Brush)
-        //        converter.Convert(user.AvatarColor, typeof(Microsoft.UI.Xaml.Media.Brush), null, string.Empty);
-        //}
 
         private void SetupUserInfo()
         {
@@ -157,15 +119,6 @@ namespace MerchApp.Views
 
             var tag = item.Tag?.ToString();
 
-            //if (tag == "SignOut")
-            //{
-            //    var auth = App.Current.Services.GetRequiredService<IAuthService>();
-            //    var session = App.Current.Services.GetRequiredService<ISessionContext>();
-            //    await auth.LogoutAsync();
-            //    session.ClearUser();
-            //    return;
-            //}
-
             var pageType = tag switch
             {
                 "Catalogue" => typeof(ItemsPage),
@@ -187,24 +140,5 @@ namespace MerchApp.Views
             session.ClearUser();
         }
 
-        //private void SetPaneFooterVisibility(bool isOpen)
-        //{
-        //    if (isOpen)
-        //    {
-        //        UserTextPanel.Visibility = Visibility.Visible;
-        //        SignOutText.Visibility = Visibility.Visible;
-        //        SignOutButton.HorizontalAlignment = HorizontalAlignment.Stretch;
-        //        SignOutButton.Padding = new Thickness(16, 8, 16, 8);
-        //        SignOutButton.Width = double.NaN; // Auto
-        //    }
-        //    else
-        //    {
-        //        UserTextPanel.Visibility = Visibility.Collapsed;
-        //        SignOutText.Visibility = Visibility.Collapsed;
-        //        SignOutButton.HorizontalAlignment = HorizontalAlignment.Center;
-        //        SignOutButton.Padding = new Thickness(8);
-        //        SignOutButton.Width = 36;
-        //    }
-        //}
     }
 }

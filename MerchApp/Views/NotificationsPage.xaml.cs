@@ -47,15 +47,17 @@ namespace MerchApp.Views
         private void LoadNotifications()
         {
             _notifications.Clear();
+
             foreach (var n in _notificationService.Notifications)
                 _notifications.Add(n);
 
-            // Pokaż empty state tylko gdy brak powiadomień
             EmptyState.Visibility = _notifications.Count == 0
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
-            _notificationService.MarkAllAsRead();
+            // Only mark as read if there are notifications
+            if (_notificationService.Notifications.Count > 0)
+                _notificationService.MarkAllAsRead();
         }
 
         private void OnNotificationsChanged(object? sender, System.EventArgs e)
@@ -63,6 +65,7 @@ namespace MerchApp.Views
 
         private void ClearAll_Click(object sender, RoutedEventArgs e)
         {
+            if (_notificationService.Notifications.Count == 0) return;
             _notificationService.Clear();
         }
     }

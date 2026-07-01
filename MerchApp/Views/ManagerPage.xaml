@@ -207,15 +207,15 @@
 
                                 </Grid>
 
-                                <!-- Expanded details — część tej samej ramki -->
+                                <!-- Expanded details — part of the same frame -->
                                 <StackPanel
-                        Padding="12,0,12,12"
-                        Spacing="12"
-                        Visibility="{x:Bind IsExpanded, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    Padding="12,0,12,12"
+                                    Spacing="12"
+                                    Visibility="{x:Bind IsExpanded, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
 
                                     <Border
-                            Height="1"
-                            Background="{ThemeResource DividerStrokeColorDefaultBrush}"/>
+                                        Height="1"
+                                        Background="{ThemeResource DividerStrokeColorDefaultBrush}"/>
 
                                     <!-- Items -->
                                     <StackPanel Spacing="4">
@@ -245,15 +245,6 @@
                                             Style="{StaticResource CaptionTextBlockStyle}"
                                             TextWrapping="Wrap"/>
                                     </Border>
-
-                                    <!-- Dates -->
-                                    <!--<TextBlock
-                            Style="{StaticResource CaptionTextBlockStyle}"
-                            Foreground="{ThemeResource TextFillColorSecondaryBrush}">
-                            <Run Text="{x:Bind Request.RentalFrom}"/>
-                            <Run Text="→"/>
-                            <Run Text="{x:Bind Request.RentalTo}"/>
-                                    </TextBlock>-->
 
                                 </StackPanel>
 
