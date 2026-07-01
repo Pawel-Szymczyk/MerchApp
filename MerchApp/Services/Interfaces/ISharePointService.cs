@@ -9,7 +9,7 @@ namespace MerchApp.Services.Interfaces
     {
         Task<int> TestConnectionAsync();
         Task<List<Models.Item>> GetItemsAsync();
-        Task<int> AddItemAsync(string title, int totalCount, string description = "");
+        Task<int> AddItemAsync(string title);
         Task DeleteItemAsync(int itemId);
         Task<int> CreateRentalRequestAsync(AppUser user, List<CartItem> cartItems, DateTime rentalFrom, DateTime rentalTo, string purpose = "");
         Task<List<RentalRequest>> GetAllRentalRequestsAsync();

@@ -40,7 +40,7 @@ namespace MerchApp.Models
 
         public bool IsOverdue =>
             Status == RentalStatus.Approved &&
-            RentalTo < DateTime.Today &&
+            RentalTo.ToLocalTime().Date < DateTime.Today &&
             ReturnedDate == null;
 
         public string Initials

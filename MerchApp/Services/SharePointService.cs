@@ -60,7 +60,6 @@ namespace MerchApp.Services
               <ViewFields>
                 <FieldRef Name='ID'/>
                 <FieldRef Name='Title'/>
-                <FieldRef Name='Description'/>
               </ViewFields>
             </View>"
             };
@@ -75,17 +74,14 @@ namespace MerchApp.Services
                 items.Add(new Item
                 {
                     Id = i.Id,
-                    Title = i["Title"]?.ToString() ?? string.Empty,
-                    Description = i.FieldValues.ContainsKey("Description") && i["Description"] != null
-                                      ? i["Description"].ToString()
-                                      : string.Empty
+                    Title = i["Title"]?.ToString() ?? string.Empty
                 });
             }
 
             return items;
         }
 
-        public async Task<int> AddItemAsync(string title, int totalCount, string description = "")
+        public async Task<int> AddItemAsync(string title)
         {
             using var ctx = await GetContextAsync();
 
@@ -94,8 +90,6 @@ namespace MerchApp.Services
             var item = list.AddItem(itemInfo);
 
             item["Title"] = title;
-            //item["TotalCount"] = totalCount;
-            item["Description"] = description;
             item.Update();
 
             await ctx.ExecuteQueryAsync();
@@ -156,7 +150,6 @@ namespace MerchApp.Services
                 lineItem["RequestId"] = requestId;
                 lineItem["ItemId"] = cartItem.Item.Id;
                 lineItem["ItemName"] = cartItem.Item.Title;
-                //lineItem["Quantity"] = cartItem.Quantity;
                 lineItem.Update();
             }
 
@@ -315,40 +308,56 @@ namespace MerchApp.Services
         }
 
         private async Task<List<RentalItem>> GetRentalItemsForRequestsAsync(
-            ClientContext ctx, List<int> requestIds)
+     ClientContext ctx, List<int> requestIds)
         {
             var list = ctx.Web.Lists.GetByTitle(RentalItemsListName);
+            var result = new List<RentalItem>();
 
-            var inValues = string.Join("",
-                requestIds.Select(id => $"<Value Type='Number'>{id}</Value>"));
+            // Build query — use Eq for single ID, In for multiple
+            string whereClause;
+
+            if (requestIds.Count == 1)
+            {
+                whereClause = $@"<Where>
+            <Eq>
+                <FieldRef Name='RequestId'/>
+                <Value Type='Number'>{requestIds[0]}</Value>
+            </Eq>
+        </Where>";
+            }
+            else
+            {
+                var inValues = string.Join("",
+                    requestIds.Select(id => $"<Value Type='Number'>{id}</Value>"));
+
+                whereClause = $@"<Where>
+            <In>
+                <FieldRef Name='RequestId'/>
+                <Values>{inValues}</Values>
+            </In>
+        </Where>";
+            }
 
             var query = new CamlQuery
             {
                 ViewXml = $@"
-                <View>
-                  <Query>
-                    <Where>
-                      <In>
-                        <FieldRef Name='RequestId'/>
-                        <Values>{inValues}</Values>
-                      </In>
-                    </Where>
-                  </Query>
-                  <ViewFields>
-                    <FieldRef Name='ID'/>
-                    <FieldRef Name='RequestId'/>
-                    <FieldRef Name='ItemId'/>
-                    <FieldRef Name='ItemName'/>
-                    <FieldRef Name='Quantity'/>
-                  </ViewFields>
-                </View>"
+            <View>
+              <Query>
+                {whereClause}
+              </Query>
+              <ViewFields>
+                <FieldRef Name='ID'/>
+                <FieldRef Name='RequestId'/>
+                <FieldRef Name='ItemId'/>
+                <FieldRef Name='ItemName'/>
+              </ViewFields>
+            </View>"
             };
 
             var spItems = list.GetItems(query);
             ctx.Load(spItems);
             await ctx.ExecuteQueryAsync();
 
-            var result = new List<RentalItem>();
             foreach (var i in spItems)
             {
                 result.Add(new RentalItem
@@ -362,12 +371,10 @@ namespace MerchApp.Services
                                     : 0,
                     ItemName = i.FieldValues.ContainsKey("ItemName") && i["ItemName"] != null
                                     ? i["ItemName"].ToString()
-                                    : string.Empty,
-                    Quantity = i.FieldValues.ContainsKey("Quantity") && i["Quantity"] != null
-                                    ? Convert.ToInt32(i["Quantity"])
-                                    : 1
+                                    : string.Empty
                 });
             }
+
             return result;
         }
 

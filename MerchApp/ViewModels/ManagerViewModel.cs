@@ -157,7 +157,7 @@ namespace MerchApp.ViewModels
                     await _sharePointService.ApproveRequestAsync(s.Request.Id);
 
                     var itemsSummary = string.Join(", ",
-                        s.Request.Items.Select(i => $"{i.ItemName} ×{i.Quantity}"));
+                        s.Request.Items.Select(i => $"{i.ItemName}"));
                     _notificationService.NotifyRequestApproved(itemsSummary);
                 }
 
@@ -245,11 +245,11 @@ namespace MerchApp.ViewModels
 
             var wasExpanded = request.IsExpanded;
 
-            // Zwiń wszystkie
+            // collapse all
             foreach (var r in FilteredRequests)
                 r.IsExpanded = false;
 
-            // Rozwiń kliknięty jeśli był zwinięty
+            // show the selected one if it was not expanded before
             if (!wasExpanded)
                 request.IsExpanded = true;
         }
@@ -293,7 +293,7 @@ namespace MerchApp.ViewModels
             var filtered = SelectedFilter switch
             {
                 "Pending" => Requests.Where(r => r.Request.Status == RentalStatus.Pending),
-                "Active" => Requests.Where(r => r.Request.Status == RentalStatus.Approved),
+                "Active" => Requests.Where(r => r.Request.Status == RentalStatus.Approved && !r.Request.IsOverdue),
                 "Overdue" => Requests.Where(r => r.Request.IsOverdue),
                 "Returned" => Requests.Where(r => r.Request.Status == RentalStatus.Returned),
                 _ => Requests.AsEnumerable()

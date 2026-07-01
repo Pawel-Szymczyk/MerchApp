@@ -11,6 +11,5 @@
         public int RequestId { get; set; }
         public int ItemId { get; set; }
         public string ItemName { get; set; } = string.Empty;
-        public int Quantity { get; set; } = 1;
     }
 }

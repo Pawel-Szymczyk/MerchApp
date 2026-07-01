@@ -105,7 +105,8 @@ namespace MerchApp.ViewModels
             var filtered = SelectedFilter switch
             {
                 "Pending" => AllRequests.Where(r => r.Status == RentalStatus.Pending),
-                "Active" => AllRequests.Where(r => r.Status == RentalStatus.Approved),
+                "Active" => AllRequests.Where(r => r.Status == RentalStatus.Approved && !r.IsOverdue),
+                "Overdue" => AllRequests.Where(r => r.IsOverdue),
                 "Returned" => AllRequests.Where(r => r.Status == RentalStatus.Returned),
                 _ => AllRequests.AsEnumerable()
             };
