@@ -17,7 +17,7 @@
 
   <Properties>
     <DisplayName>MerchApp</DisplayName>
-    <PublisherDisplayName>szymc</PublisherDisplayName>
+    <PublisherDisplayName>Pawel Szymczyk IT Services</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -35,8 +35,8 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="MerchApp"
-        Description="MerchApp"
+        DisplayName="Merch"
+        Description="Merch App is a WinUI 3 desktop application that allows organisations to manage the rental of promotional materials (merch) internally. It was built for **Stop Domestic Abuse**, a UK-based charity, as part of their internal tooling to track who has borrowed what, when items are due back, and to streamline the approval process."
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png">
