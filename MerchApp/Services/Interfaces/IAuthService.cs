@@ -11,5 +11,6 @@ namespace MerchApp.Services.Interfaces
         Task<AppUser?> LoginAsync();
         Task<string> GetAccessTokenAsync();
         Task LogoutAsync();
+        void Reset();
     }
 }

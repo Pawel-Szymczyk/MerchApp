@@ -40,63 +40,72 @@ namespace MerchApp.Views
             ManagerEmailBox.Text = _settingsService.Settings.Roles.ManagerEmail ?? string.Empty;
         }
 
-        private void Save_Click(object sender, RoutedEventArgs e)
+        private async void Save_Click(object sender, RoutedEventArgs e)
         {
             ErrorText.Visibility = Visibility.Collapsed;
 
-            var siteUrl = SiteUrlBox.Text?.Trim() ?? string.Empty;
-            var clientId = ClientIdBox.Text?.Trim() ?? string.Empty;
-            var tenantId = TenantIdBox.Text?.Trim() ?? string.Empty;
-            var managerEmail = ManagerEmailBox.Text?.Trim() ?? string.Empty;
-
-            if (string.IsNullOrWhiteSpace(siteUrl))
-            { ShowError("SharePoint Site URL is required."); return; }
-
-            if (!Uri.TryCreate(siteUrl, UriKind.Absolute, out _))
-            { ShowError("SharePoint Site URL is not a valid URL."); return; }
-
-            if (string.IsNullOrWhiteSpace(clientId))
-            { ShowError("Entra App Client ID is required."); return; }
-
-            if (!Guid.TryParse(clientId, out _))
-            { ShowError("Client ID is not a valid GUID. Copy it exactly from Entra."); return; }
-
-            if (string.IsNullOrWhiteSpace(tenantId))
-            { ShowError("Entra Tenant ID is required."); return; }
-
-            if (!Guid.TryParse(tenantId, out _))
-            { ShowError("Tenant ID is not a valid GUID. Copy it exactly from Entra."); return; }
-
-            if (string.IsNullOrWhiteSpace(managerEmail))
-            { ShowError("Manager Email is required."); return; }
-
-            if (!managerEmail.Contains('@'))
-            { ShowError("Manager Email is not valid."); return; }
-
-            // Save settings
-            var settings = new AppSettings
+            try
             {
-                SharePoint = new SharePointSettings
+                var siteUrl = SiteUrlBox.Text?.Trim() ?? string.Empty;
+                var clientId = ClientIdBox.Text?.Trim() ?? string.Empty;
+                var tenantId = TenantIdBox.Text?.Trim() ?? string.Empty;
+                var managerEmail = ManagerEmailBox.Text?.Trim() ?? string.Empty;
+
+                if (string.IsNullOrWhiteSpace(siteUrl))
+                { ShowError("SharePoint Site URL is required."); return; }
+
+                if (!Uri.TryCreate(siteUrl, UriKind.Absolute, out _))
+                { ShowError("SharePoint Site URL is not a valid URL."); return; }
+
+                if (string.IsNullOrWhiteSpace(clientId))
+                { ShowError("Entra App Client ID is required."); return; }
+
+                if (!Guid.TryParse(clientId, out _))
+                { ShowError("Client ID is not a valid GUID."); return; }
+
+                if (string.IsNullOrWhiteSpace(tenantId))
+                { ShowError("Entra Tenant ID is required."); return; }
+
+                if (!Guid.TryParse(tenantId, out _))
+                { ShowError("Tenant ID is not a valid GUID."); return; }
+
+                if (string.IsNullOrWhiteSpace(managerEmail))
+                { ShowError("Manager Email is required."); return; }
+
+                if (!managerEmail.Contains('@'))
+                { ShowError("Manager Email is not valid."); return; }
+
+                var settings = new AppSettings
                 {
-                    SiteUrl = siteUrl,
-                    ClientId = clientId,
-                    TenantId = tenantId,
-                    ItemsListName = "MerchItems",
-                    RentalRequestsListName = "RentalRequests",
-                    RentalItemsListName = "RentalItems"
-                },
-                Roles = new RolesSettings
-                {
-                    ManagerEmail = managerEmail
-                }
-            };
+                    SharePoint = new SharePointSettings
+                    {
+                        SiteUrl = siteUrl,
+                        ClientId = clientId,
+                        TenantId = tenantId,
+                        ItemsListName = "MerchItems",
+                        RentalRequestsListName = "RentalRequests",
+                        RentalItemsListName = "RentalItems"
+                    },
+                    Roles = new RolesSettings
+                    {
+                        ManagerEmail = managerEmail
+                    }
+                };
 
-            _settingsService.SaveSettings(settings);
+                _settingsService.SaveSettings(settings);
 
-            var session = App.Current.Services.GetRequiredService<ISessionContext>();
-            session.ClearUser();
+                var authService = App.Current.Services.GetRequiredService<IAuthService>();
+                authService.Reset();
 
-            Frame.Navigate(typeof(LoginPage));
+                var session = App.Current.Services.GetRequiredService<ISessionContext>();
+                session.ClearUser();
+
+                Frame.Navigate(typeof(LoginPage));
+            }
+            catch (Exception ex)
+            {
+                ShowError($"Error saving configuration: {ex.Message}");
+            }
         }
 
         private void ShowError(string message)

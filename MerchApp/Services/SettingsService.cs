@@ -35,7 +35,9 @@ namespace MerchApp.Services
                 try
                 {
                     var json = File.ReadAllText(LocalConfigPath);
-                    var settings = JsonSerializer.Deserialize<AppSettings>(json);
+                    var settings = JsonSerializer.Deserialize(
+                        json,
+                        AppSettingsJsonContext.Default.AppSettings);
                     if (settings is not null) return settings;
                 }
                 catch { }
@@ -48,7 +50,9 @@ namespace MerchApp.Services
                 if (File.Exists(devPath))
                 {
                     var json = File.ReadAllText(devPath);
-                    var settings = JsonSerializer.Deserialize<AppSettings>(json);
+                    var settings = JsonSerializer.Deserialize(
+                        json,
+                        AppSettingsJsonContext.Default.AppSettings);
                     if (settings is not null) return settings;
                 }
             }
@@ -64,10 +68,9 @@ namespace MerchApp.Services
             var dir = Path.GetDirectoryName(LocalConfigPath)!;
             Directory.CreateDirectory(dir);
 
-            var json = JsonSerializer.Serialize(settings, new JsonSerializerOptions
-            {
-                WriteIndented = true
-            });
+            var json = JsonSerializer.Serialize(
+                settings,
+                AppSettingsJsonContext.Default.AppSettings);
 
             File.WriteAllText(LocalConfigPath, json);
         }

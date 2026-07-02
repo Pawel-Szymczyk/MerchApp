@@ -175,5 +175,12 @@ namespace MerchApp.Services
                 catch { }
             });
         }
+
+        public void Reset()
+        {
+            _msalClient = null;
+            _scopes = null;
+            _currentUser = null;
+        }
     }
 }
