@@ -42,44 +42,36 @@ namespace MerchApp.Views
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            var siteUrl = SiteUrlBox.Text.Trim();
-            var clientId = ClientIdBox.Text.Trim();
-            var tenantId = TenantIdBox.Text.Trim();
-            var managerEmail = ManagerEmailBox.Text.Trim();
+            ErrorText.Visibility = Visibility.Collapsed;
 
-            // Validate
-            if (string.IsNullOrWhiteSpace(siteUrl) ||
-                string.IsNullOrWhiteSpace(clientId) ||
-                string.IsNullOrWhiteSpace(tenantId) ||
-                string.IsNullOrWhiteSpace(managerEmail))
-            {
-                ShowError("All fields are required.");
-                return;
-            }
+            var siteUrl = SiteUrlBox.Text?.Trim() ?? string.Empty;
+            var clientId = ClientIdBox.Text?.Trim() ?? string.Empty;
+            var tenantId = TenantIdBox.Text?.Trim() ?? string.Empty;
+            var managerEmail = ManagerEmailBox.Text?.Trim() ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(siteUrl))
+            { ShowError("SharePoint Site URL is required."); return; }
 
             if (!Uri.TryCreate(siteUrl, UriKind.Absolute, out _))
-            {
-                ShowError("SharePoint Site URL is not a valid URL.");
-                return;
-            }
+            { ShowError("SharePoint Site URL is not a valid URL."); return; }
+
+            if (string.IsNullOrWhiteSpace(clientId))
+            { ShowError("Entra App Client ID is required."); return; }
 
             if (!Guid.TryParse(clientId, out _))
-            {
-                ShowError("Client ID is not a valid GUID.");
-                return;
-            }
+            { ShowError("Client ID is not a valid GUID. Copy it exactly from Entra."); return; }
+
+            if (string.IsNullOrWhiteSpace(tenantId))
+            { ShowError("Entra Tenant ID is required."); return; }
 
             if (!Guid.TryParse(tenantId, out _))
-            {
-                ShowError("Tenant ID is not a valid GUID.");
-                return;
-            }
+            { ShowError("Tenant ID is not a valid GUID. Copy it exactly from Entra."); return; }
+
+            if (string.IsNullOrWhiteSpace(managerEmail))
+            { ShowError("Manager Email is required."); return; }
 
             if (!managerEmail.Contains('@'))
-            {
-                ShowError("Manager email is not valid.");
-                return;
-            }
+            { ShowError("Manager Email is not valid."); return; }
 
             // Save settings
             var settings = new AppSettings
@@ -101,7 +93,9 @@ namespace MerchApp.Views
 
             _settingsService.SaveSettings(settings);
 
-            // Navigate to login
+            var session = App.Current.Services.GetRequiredService<ISessionContext>();
+            session.ClearUser();
+
             Frame.Navigate(typeof(LoginPage));
         }
 

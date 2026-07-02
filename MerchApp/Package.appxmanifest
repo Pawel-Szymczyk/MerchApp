@@ -10,7 +10,7 @@
 
   <Identity
     Name="MerchApp"
-    Publisher="CN=szymc"
+    Publisher="CN=Pawel Szymczyk IT Services"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="63ed2830-5a1e-4758-8779-643c70566198" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>

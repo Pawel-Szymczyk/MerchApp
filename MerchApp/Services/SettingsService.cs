@@ -12,10 +12,11 @@ namespace MerchApp.Services
         //public AppSettings Settings { get; private set; }
         private AppSettings? _settings;
 
-        private static string LocalConfigPath => 
+        private static string LocalConfigPath =>
             Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "MerchApp", "config.json");
+                Windows.Storage.ApplicationData.Current.LocalFolder.Path,
+                "MerchApp",
+                "config.json");
 
         public AppSettings Settings => _settings ??= LoadSettings();
 

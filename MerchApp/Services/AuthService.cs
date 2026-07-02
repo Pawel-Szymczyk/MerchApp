@@ -9,28 +9,39 @@ using System.Threading.Tasks;
 
 namespace MerchApp.Services
 {
+
     public class AuthService : IAuthService
     {
-        private readonly IPublicClientApplication _msalClient;
         private readonly ISettingsService _settingsService;
-        private readonly string[] _scopes;
+        private IPublicClientApplication? _msalClient;
+        private string[]? _scopes;
         private AppUser? _currentUser;
-
 
         public AppUser? CurrentUser => _currentUser;
         public bool IsLoggedIn => _currentUser != null;
 
-
         public AuthService(ISettingsService settingsService)
         {
             _settingsService = settingsService;
+        }
+
+        //_scopes = new[]
+        // {
+        //    "https://pawelszymczykitservices.sharepoint.com/AllSites.Read",
+        //    "https://pawelszymczykitservices.sharepoint.com/AllSites.Write"
+        //};
+
+        private void EnsureInitialized()
+        {
+            if (_msalClient is not null) return;
 
             var sp = _settingsService.Settings.SharePoint;
 
+            var host = new Uri(sp.SiteUrl).GetLeftPart(UriPartial.Authority);
             _scopes = new[]
-             {
-                "https://pawelszymczykitservices.sharepoint.com/AllSites.Read",
-                "https://pawelszymczykitservices.sharepoint.com/AllSites.Write"
+            {
+                $"{host}/AllSites.Read",
+                $"{host}/AllSites.Write"
             };
 
             _msalClient = PublicClientApplicationBuilder
@@ -44,10 +55,12 @@ namespace MerchApp.Services
 
         public async Task<string> GetAccessTokenAsync()
         {
+            EnsureInitialized();
+
             if (_currentUser == null)
                 throw new InvalidOperationException("User is not logged in.");
 
-            var accounts = await _msalClient.GetAccountsAsync();
+            var accounts = await _msalClient!.GetAccountsAsync();
             var account = accounts.FirstOrDefault(a =>
                 a.Username.Equals(_currentUser.Email, StringComparison.OrdinalIgnoreCase));
 
@@ -63,15 +76,14 @@ namespace MerchApp.Services
 
         public async Task<AppUser?> LoginAsync()
         {
+            EnsureInitialized();
+
             AuthenticationResult result;
-
-            // Cancel after 2 minutes if user doesn't complete login
             using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromMinutes(2));
-
 
             try
             {
-                var accounts = await _msalClient.GetAccountsAsync();
+                var accounts = await _msalClient!.GetAccountsAsync();
                 var firstAccount = accounts.FirstOrDefault();
 
                 if (firstAccount != null)
@@ -90,12 +102,15 @@ namespace MerchApp.Services
             }
             catch (MsalClientException ex) when (ex.ErrorCode == "authentication_canceled")
             {
-                // User closed the browser — return null instead of throwing
+                return null;
+            }
+            catch (OperationCanceledException)
+            {
                 return null;
             }
             catch (MsalUiRequiredException)
             {
-                result = await _msalClient
+                result = await _msalClient!
                     .AcquireTokenInteractive(_scopes)
                     .WithPrompt(Prompt.SelectAccount)
                     .ExecuteAsync(cts.Token);
@@ -107,16 +122,16 @@ namespace MerchApp.Services
 
         public async Task LogoutAsync()
         {
+            if (_msalClient is null) return;
+
             var accounts = await _msalClient.GetAccountsAsync();
             foreach (var account in accounts)
-            {
                 await _msalClient.RemoveAsync(account);
-            }
 
             _currentUser = null;
         }
 
-        private AppUser? BuildUser(AuthenticationResult result)
+        private AppUser BuildUser(AuthenticationResult result)
         {
             var email = result.Account.Username;
             var managerEmail = _settingsService.Settings.Roles.ManagerEmail;
@@ -138,8 +153,10 @@ namespace MerchApp.Services
 
         private void EnableTokenCache()
         {
+            if (_msalClient is null) return;
+
             var cacheDir = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                Windows.Storage.ApplicationData.Current.LocalFolder.Path,
                 "MerchApp", "TokenCache");
 
             Directory.CreateDirectory(cacheDir);
@@ -155,9 +172,7 @@ namespace MerchApp.Services
                     var cacheHelper = await MsalCacheHelper.CreateAsync(storageProperties);
                     cacheHelper.RegisterCache(_msalClient.UserTokenCache);
                 }
-                catch
-                {
-                }
+                catch { }
             });
         }
     }
