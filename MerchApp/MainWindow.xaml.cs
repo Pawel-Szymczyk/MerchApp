@@ -47,10 +47,16 @@ namespace MerchApp
             titleBar.ButtonInactiveBackgroundColor = darkColor;
             titleBar.ButtonInactiveForegroundColor = textColor;
 
+            var settings = App.Current.Services.GetRequiredService<ISettingsService>();
             var session = App.Current.Services.GetRequiredService<ISessionContext>();
 
+            if (!settings.IsConfigured)
+            {
+                RootFrame.Navigate(typeof(SetupPage));
+            }
+
             // navigate to login or shell depending on session state
-            if (session.IsLoggedIn)
+            else if (session.IsLoggedIn)
             {
                 RootFrame.Navigate(typeof(ShellPage));
             }

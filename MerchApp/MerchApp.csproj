@@ -39,6 +39,7 @@
     <None Remove="Views\ManagerPage.xaml" />
     <None Remove="Views\MyRentalsPage.xaml" />
     <None Remove="Views\NotificationsPage.xaml" />
+    <None Remove="Views\SetupPage.xaml" />
     <None Remove="Views\ShellPage.xaml" />
   </ItemGroup>
 
@@ -98,6 +99,9 @@
     <None Update="Config\appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\SetupPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\NotificationsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

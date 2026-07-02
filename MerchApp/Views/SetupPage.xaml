@@ -1,0 +1,120 @@
+<Page
+    x:Class="MerchApp.Views.SetupPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <!-- Logo top-left -->
+        <Image
+            Grid.Row="0"
+            Source="ms-appx:///Assets/LogoDark/icon_256_transparent.png"
+            Width="180"
+            HorizontalAlignment="Left"
+            Margin="32,32,0,0"/>
+
+        <!-- Setup card -->
+        <Border
+            Grid.Row="1"
+            Width="500"
+            Padding="40"
+            CornerRadius="12"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1">
+
+            <StackPanel Spacing="16">
+
+                <!-- Title -->
+                <StackPanel Spacing="4">
+                    <TextBlock
+                        Text="Setup Merch"
+                        FontSize="22"
+                        FontWeight="SemiBold"/>
+                    <TextBlock
+                        Text="Enter your Microsoft 365 configuration to get started."
+                        FontSize="13"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        TextWrapping="Wrap"/>
+                </StackPanel>
+
+                <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}"/>
+
+                <!-- SharePoint Site URL -->
+                <StackPanel Spacing="6">
+                    <TextBlock
+                        Text="SharePoint Site URL"
+                        FontSize="13"
+                        FontWeight="SemiBold"/>
+                    <TextBox
+                        x:Name="SiteUrlBox"
+                        PlaceholderText="https://yourtenant.sharepoint.com/sites/MerchApp"
+                        FontSize="13"/>
+                </StackPanel>
+
+                <!-- Client ID -->
+                <StackPanel Spacing="6">
+                    <TextBlock
+                        Text="Entra App Client ID"
+                        FontSize="13"
+                        FontWeight="SemiBold"/>
+                    <TextBox
+                        x:Name="ClientIdBox"
+                        PlaceholderText="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                        FontSize="13"/>
+                </StackPanel>
+
+                <!-- Tenant ID -->
+                <StackPanel Spacing="6">
+                    <TextBlock
+                        Text="Entra Tenant ID"
+                        FontSize="13"
+                        FontWeight="SemiBold"/>
+                    <TextBox
+                        x:Name="TenantIdBox"
+                        PlaceholderText="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                        FontSize="13"/>
+                </StackPanel>
+
+                <!-- Manager Email -->
+                <StackPanel Spacing="6">
+                    <TextBlock
+                        Text="Manager Email"
+                        FontSize="13"
+                        FontWeight="SemiBold"/>
+                    <TextBox
+                        x:Name="ManagerEmailBox"
+                        PlaceholderText="manager@yourdomain.com"
+                        FontSize="13"/>
+                </StackPanel>
+
+                <!-- Error message -->
+                <TextBlock
+                    x:Name="ErrorText"
+                    FontSize="12"
+                    Foreground="#ff7064"
+                    TextWrapping="Wrap"
+                    Visibility="Collapsed"/>
+
+                <!-- Save button -->
+                <Button
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    HorizontalAlignment="Stretch"
+                    Height="44"
+                    Click="Save_Click">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <FontIcon Glyph="&#xE74E;" FontSize="16"/>
+                        <TextBlock Text="Save and Continue"/>
+                    </StackPanel>
+                </Button>
+
+            </StackPanel>
+        </Border>
+    </Grid>
+</Page>
