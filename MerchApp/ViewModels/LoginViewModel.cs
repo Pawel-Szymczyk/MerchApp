@@ -47,6 +47,13 @@ namespace MerchApp.ViewModels
             try
             {
                 var user = await _authService.LoginAsync();
+                if (user is null)
+                {
+                    // User cancelled — reset to original message
+                    StatusMessage = "Sign in with your Microsoft 365 account to request merch items and track your rentals.";
+                    return;
+                }
+
                 _session.SetUser(user);
 
                 StatusMessage = $"Welcome, {user.DisplayName}!";

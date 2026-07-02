@@ -65,6 +65,10 @@ namespace MerchApp.Services
         {
             AuthenticationResult result;
 
+            // Cancel after 2 minutes if user doesn't complete login
+            using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromMinutes(2));
+
+
             try
             {
                 var accounts = await _msalClient.GetAccountsAsync();
@@ -74,22 +78,27 @@ namespace MerchApp.Services
                 {
                     result = await _msalClient
                         .AcquireTokenSilent(_scopes, firstAccount)
-                        .ExecuteAsync();
+                        .ExecuteAsync(cts.Token);
                 }
                 else
                 {
                     result = await _msalClient
                         .AcquireTokenInteractive(_scopes)
                         .WithPrompt(Prompt.SelectAccount)
-                        .ExecuteAsync();
+                        .ExecuteAsync(cts.Token);
                 }
+            }
+            catch (MsalClientException ex) when (ex.ErrorCode == "authentication_canceled")
+            {
+                // User closed the browser — return null instead of throwing
+                return null;
             }
             catch (MsalUiRequiredException)
             {
                 result = await _msalClient
                     .AcquireTokenInteractive(_scopes)
                     .WithPrompt(Prompt.SelectAccount)
-                    .ExecuteAsync();
+                    .ExecuteAsync(cts.Token);
             }
 
             _currentUser = BuildUser(result);
