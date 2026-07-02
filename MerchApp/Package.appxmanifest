@@ -9,14 +9,14 @@
   IgnorableNamespaces="uap rescap systemai">
 
   <Identity
-    Name="63ed2830-5a1e-4758-8779-643c70566198"
+    Name="MerchApp"
     Publisher="CN=szymc"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="63ed2830-5a1e-4758-8779-643c70566198" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>MerchApp</DisplayName>
+    <DisplayName>Merch App</DisplayName>
     <PublisherDisplayName>Pawel Szymczyk IT Services</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -35,7 +35,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="Merch"
+        DisplayName="Merch App"
         Description="Merch App is a WinUI 3 desktop application that allows organisations to manage the rental of promotional materials (merch) internally. It was built for **Stop Domestic Abuse**, a UK-based charity, as part of their internal tooling to track who has borrowed what, when items are due back, and to streamline the approval process."
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"

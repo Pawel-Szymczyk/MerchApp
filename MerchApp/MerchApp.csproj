@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
@@ -144,5 +144,9 @@
     <PublishTrimmed Condition="'$(Configuration)' == 'Debug'">False</PublishTrimmed>
     <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
     <ApplicationIcon>Assets\LogoDark\merch_app_dark.ico</ApplicationIcon>
+    <Authors>Pawel Szymczyk</Authors>
+    <Company>Pawel Szymczyk IT Services</Company>
+    <Description>Merch rental management application</Description>
+    <Copyright>Copyright © 2026 Pawel Szymczyk IT Services</Copyright>
   </PropertyGroup>
 </Project>
