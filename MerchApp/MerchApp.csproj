@@ -31,6 +31,7 @@
     <None Remove="Assets\LogoDark\icon_256_transparent.png" />
     <None Remove="Assets\LogoDark\icon_44_transparent.png" />
     <None Remove="Assets\LogoDark\logo_login_dark.png" />
+    <None Remove="Assets\LogoDark\merch_title.ico" />
     <None Remove="ItemsPage.xaml" />
     <None Remove="Views\CartPage.xaml" />
     <None Remove="Views\ItemsPage.xaml" />
@@ -84,6 +85,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="Assets\LogoDark\logo_login_dark.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\LogoDark\merch_title.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\Square44x44Logo.targetsize-48.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

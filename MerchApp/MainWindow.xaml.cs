@@ -15,13 +15,20 @@ namespace MerchApp
         {
             InitializeComponent();
 
-            // window size
+            
             var appWindow = AppWindow;
+
+            // Set window icon
+            AppWindow.SetIcon("Assets/LogoDark/merch_title.ico");
+
+            // Set window size
             appWindow.Resize(new SizeInt32(960, 850));
 
             // Ustaw ciemny title bar
             var titleBar = AppWindow.TitleBar;
             titleBar.ExtendsContentIntoTitleBar = false;
+
+
 
             var darkColor = new Windows.UI.Color { A = 255, R = 28, G = 28, B = 28 };      // #1c1c1c
             var accentColor = new Windows.UI.Color { A = 255, R = 208, G = 109, B = 31 };  // #d06d1f

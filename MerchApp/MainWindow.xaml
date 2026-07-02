@@ -2,7 +2,7 @@
     x:Class="MerchApp.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Merch App">
+    Title="SDA - Merch">
 
     <Frame x:Name="RootFrame"/>
 
