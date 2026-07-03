@@ -33,6 +33,8 @@ namespace MerchApp.ViewModels
         private readonly ISharePointService _sharePointService;
         private readonly INotificationService _notificationService;
 
+        private bool _suppressNotifications = false;
+
         // -------------------------------------------------------------------------
         // Observable properties
         // -------------------------------------------------------------------------
@@ -66,21 +68,86 @@ namespace MerchApp.ViewModels
 
         // -------------------------------------------------------------------------
 
-        public int SelectedCount => FilteredRequests.Count(r => r.IsSelected);
         public bool HasSelection => SelectedCount > 0;
 
-        // Pokaż przyciski tylko gdy wszystkie zaznaczone są Pending
-        public bool HasPendingSelection =>
-            SelectedCount > 0 &&
-            FilteredRequests
-                .Where(r => r.IsSelected)
-                .All(r => r.Request.Status == RentalStatus.Pending);
+        public bool HasReturnedSelection
+        {
+            get
+            {
+                try
+                {
+                    var snapshot = FilteredRequests.ToArray();
+                    return snapshot.Length > 0 &&
+                           snapshot.Where(r => r.IsSelected)
+                                   .Any() &&
+                           snapshot.Where(r => r.IsSelected)
+                                   .All(r => r.Request.Status == RentalStatus.Returned ||
+                                             r.Request.Status == RentalStatus.Rejected ||
+                                             r.Request.IsOverdue);
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
 
-        public bool HasReturnedSelection =>
-            SelectedCount > 0 &&
-            FilteredRequests
-                .Where(r => r.IsSelected)
-                .All(r => r.Request.Status == RentalStatus.Returned);
+        public bool HasPendingSelection
+        {
+            get
+            {
+                try
+                {
+                    var snapshot = FilteredRequests.ToArray();
+                    return snapshot.Length > 0 &&
+                           snapshot.Where(r => r.IsSelected).Any() &&
+                           snapshot.Where(r => r.IsSelected)
+                                   .All(r => r.Request.Status == RentalStatus.Pending);
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+
+        public bool HasApprovedSelection
+        {
+            get
+            {
+                try
+                {
+                    var snapshot = FilteredRequests.ToArray();
+                    return snapshot.Length > 0 &&
+                           snapshot.Where(r => r.IsSelected).Any() &&
+                           snapshot.Where(r => r.IsSelected)
+                                   .All(r => r.Request.Status == RentalStatus.Approved ||
+                                             r.Request.IsOverdue);
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+
+        public int SelectedCount
+        {
+            get
+            {
+                try { return FilteredRequests.ToArray().Count(r => r.IsSelected); }
+                catch { return 0; }
+            }
+        }
+
+        public int PendingSelectedCount
+        {
+            get
+            {
+                try { return FilteredRequests.ToArray().Count(r => r.IsSelected && r.Request.Status == RentalStatus.Pending); }
+                catch { return 0; }
+            }
+        }
 
         public ManagerViewModel(
             ISharePointService sharePointService,
@@ -116,6 +183,8 @@ namespace MerchApp.ViewModels
                     var selectable = new SelectableRequest(r);
                     selectable.PropertyChanged += (_, _) =>
                     {
+                        if (_suppressNotifications) return;
+
                         OnPropertyChanged(nameof(SelectedCount));
                         OnPropertyChanged(nameof(HasSelection));
                         OnPropertyChanged(nameof(PendingSelectedCount));
@@ -191,7 +260,7 @@ namespace MerchApp.ViewModels
         private async Task RejectSelectedAsync()
         {
             var selected = FilteredRequests
-                 .Where(r => r.IsSelected && r.Request.Status == RentalStatus.Pending)
+                 .Where(r => r.IsSelected && (r.Request.Status == RentalStatus.Pending))
                  .ToList();
 
             if (!selected.Any()) return;
@@ -306,11 +375,16 @@ namespace MerchApp.ViewModels
         [RelayCommand]
         private async Task RemoveSelectedAsync()
         {
-            // Pobierz IDs przed jakąkolwiek modyfikacją kolekcji
-            var selectedIds = FilteredRequests
-                .Where(r => r.IsSelected && r.Request.Status == RentalStatus.Returned)
+            // Snapshot — copy before any changes
+            var snapshot = FilteredRequests.ToArray();
+
+            var selectedIds = snapshot
+                .Where(r => r.IsSelected &&
+                           (r.Request.Status == RentalStatus.Returned ||
+                            r.Request.Status == RentalStatus.Rejected ||
+                            r.Request.IsOverdue))
                 .Select(r => r.Request.Id)
-                .ToList();
+                .ToArray();
 
             if (!selectedIds.Any()) return;
 
@@ -318,15 +392,22 @@ namespace MerchApp.ViewModels
 
             try
             {
-                ClearSelection();
+                // clear selected without triggering PropertyChanged
+                _suppressNotifications = true;
+                foreach (var r in snapshot)
+                    r.IsSelected = false;
+                _suppressNotifications = false;
 
+                // remove from SharePoint
                 foreach (var id in selectedIds)
                     await _sharePointService.DeleteRentalRequestAsync(id);
 
+                // refresh list
                 await LoadInternalAsync(force: true);
             }
             catch (Exception ex)
             {
+                _suppressNotifications = false;
                 HasError = true;
                 ErrorMessage = ex.Message;
             }
@@ -368,7 +449,7 @@ namespace MerchApp.ViewModels
 
         partial void OnAllSelectedChanged(bool value)
         {
-            foreach (var r in FilteredRequests)
+            foreach (var r in FilteredRequests.ToList())
                 r.IsSelected = value;
 
             OnPropertyChanged(nameof(SelectedCount));
@@ -376,17 +457,18 @@ namespace MerchApp.ViewModels
             OnPropertyChanged(nameof(PendingSelectedCount));
             OnPropertyChanged(nameof(HasPendingSelection));
             OnPropertyChanged(nameof(HasApprovedSelection));
+            OnPropertyChanged(nameof(HasReturnedSelection));
         }
 
-        public int PendingSelectedCount => FilteredRequests.Count(r => r.IsSelected && r.Request.Status == RentalStatus.Pending);
-
-        public bool HasApprovedSelection => SelectedCount > 0 && FilteredRequests
-            .Where(r => r.IsSelected).All(r => r.Request.Status == RentalStatus.Approved || r.Request.IsOverdue);
-
+      
         private void ClearSelection()
         {
-            foreach (var r in FilteredRequests)
+            _suppressNotifications = true;
+
+            foreach (var r in FilteredRequests.ToList())
                 r.IsSelected = false;
+
+            _suppressNotifications = false;
 
             AllSelected = false;
             OnPropertyChanged(nameof(SelectedCount));
@@ -394,6 +476,7 @@ namespace MerchApp.ViewModels
             OnPropertyChanged(nameof(PendingSelectedCount));
             OnPropertyChanged(nameof(HasPendingSelection));
             OnPropertyChanged(nameof(HasApprovedSelection));
+            OnPropertyChanged(nameof(HasReturnedSelection));
         }
 
     }

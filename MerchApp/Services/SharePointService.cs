@@ -218,7 +218,9 @@ namespace MerchApp.Services
             ctx.Load(items);
             await ctx.ExecuteQueryAsync();
 
-            foreach (var item in items)
+            // Snapshot before deleting
+            var itemsToDelete = items.ToList();
+            foreach (var item in itemsToDelete)
                 item.DeleteObject();
 
             await ctx.ExecuteQueryAsync();
