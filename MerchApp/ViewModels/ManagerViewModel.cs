@@ -76,6 +76,12 @@ namespace MerchApp.ViewModels
                 .Where(r => r.IsSelected)
                 .All(r => r.Request.Status == RentalStatus.Pending);
 
+        public bool HasReturnedSelection =>
+            SelectedCount > 0 &&
+            FilteredRequests
+                .Where(r => r.IsSelected)
+                .All(r => r.Request.Status == RentalStatus.Returned);
+
         public ManagerViewModel(
             ISharePointService sharePointService,
             INotificationService notificationService)
@@ -115,6 +121,7 @@ namespace MerchApp.ViewModels
                         OnPropertyChanged(nameof(PendingSelectedCount));
                         OnPropertyChanged(nameof(HasPendingSelection));
                         OnPropertyChanged(nameof(HasApprovedSelection));
+                        OnPropertyChanged(nameof(HasReturnedSelection));
                     };
                     Requests.Add(selectable);
                 }
@@ -296,6 +303,39 @@ namespace MerchApp.ViewModels
             }
         }
 
+        [RelayCommand]
+        private async Task RemoveSelectedAsync()
+        {
+            // Pobierz IDs przed jakąkolwiek modyfikacją kolekcji
+            var selectedIds = FilteredRequests
+                .Where(r => r.IsSelected && r.Request.Status == RentalStatus.Returned)
+                .Select(r => r.Request.Id)
+                .ToList();
+
+            if (!selectedIds.Any()) return;
+
+            IsBusy = true;
+
+            try
+            {
+                ClearSelection();
+
+                foreach (var id in selectedIds)
+                    await _sharePointService.DeleteRentalRequestAsync(id);
+
+                await LoadInternalAsync(force: true);
+            }
+            catch (Exception ex)
+            {
+                HasError = true;
+                ErrorMessage = ex.Message;
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
         // -------------------------------------------------------------------------
         // Helpers
         // -------------------------------------------------------------------------
@@ -321,6 +361,7 @@ namespace MerchApp.ViewModels
             OnPropertyChanged(nameof(PendingSelectedCount));
             OnPropertyChanged(nameof(HasPendingSelection));
             OnPropertyChanged(nameof(HasApprovedSelection));
+            OnPropertyChanged(nameof(HasReturnedSelection));
         }
 
         partial void OnSelectedFilterChanged(string value) => ApplyFilter();

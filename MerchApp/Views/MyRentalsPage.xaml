@@ -67,6 +67,15 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"/>
 
+        <!-- Error state -->
+        <InfoBar
+            Grid.Row="2"
+            IsOpen="{x:Bind ViewModel.HasError, Mode=OneWay}"
+            Severity="Error"
+            Title="Error"
+            Message="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}"
+            VerticalAlignment="Top"/>
+        
         <!-- Empty state -->
         <StackPanel
             Grid.Row="2"

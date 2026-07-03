@@ -40,6 +40,7 @@ namespace MerchApp.ViewModels
         [ObservableProperty]
         private string _selectedFilter = "All";
 
+
         // -------------------------------------------------------------------------
 
         public MyRentalsViewModel(

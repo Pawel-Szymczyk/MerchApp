@@ -17,5 +17,6 @@ namespace MerchApp.Services.Interfaces
         Task ApproveRequestAsync(int requestId, string note = "");
         Task RejectRequestAsync(int requestId, string reason);
         Task MarkAsReturnedAsync(int requestId);
+        Task DeleteRentalRequestAsync(int requestId);
     }
 }

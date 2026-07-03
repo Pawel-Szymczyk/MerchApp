@@ -192,6 +192,44 @@ namespace MerchApp.Services
             await ctx.ExecuteQueryAsync();
         }
 
+        public async Task DeleteRentalRequestAsync(int requestId)
+        {
+            using var ctx = await GetContextAsync();
+
+            // Delete all RentalItems for this request first
+            var rentalItemsList = ctx.Web.Lists.GetByTitle(RentalItemsListName);
+
+            var query = new CamlQuery
+            {
+                ViewXml = $@"
+            <View>
+              <Query>
+                <Where>
+                  <Eq>
+                    <FieldRef Name='RequestId'/>
+                    <Value Type='Number'>{requestId}</Value>
+                  </Eq>
+                </Where>
+              </Query>
+            </View>"
+            };
+
+            var items = rentalItemsList.GetItems(query);
+            ctx.Load(items);
+            await ctx.ExecuteQueryAsync();
+
+            foreach (var item in items)
+                item.DeleteObject();
+
+            await ctx.ExecuteQueryAsync();
+
+            // Delete the request
+            var requestList = ctx.Web.Lists.GetByTitle(RequestsListName);
+            var request = requestList.GetItemById(requestId);
+            request.DeleteObject();
+
+            await ctx.ExecuteQueryAsync();
+        }
 
         // =========================================================================
         // PRIVATE HELPERS
